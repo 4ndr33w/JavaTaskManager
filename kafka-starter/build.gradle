@@ -1,11 +1,11 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.8'
+	id 'org.springframework.boot' version '3.5.7'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'project.task.manager'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 description = 'Kafka Starter for Task Manager Project'
 
 java {
@@ -20,8 +20,21 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-autoconfigure'
+	implementation 'org.springframework.boot:spring-boot-configuration-processor'
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.projectlombok:lombok:1.18.38'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	compileOnly('org.projectlombok:lombok')
+	annotationProcessor("org.projectlombok:lombok")
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
+
+	implementation 'io.micrometer:micrometer-core'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation 'org.codehaus.janino:janino:3.1.10'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 }
 
 tasks.named('test') {
