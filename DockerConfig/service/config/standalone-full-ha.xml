@@ -1,0 +1,47 @@
+<!-- Enable Health Checks -->
+<subsystem xmlns="urn:jboss:domain:health-check:1.0">
+    <check-health-on-startup>true</check-health-on-startup>
+</subsystem>
+
+        <!-- Enable Metric Collection -->
+<subsystem xmlns="urn:jboss:domain:metrics:1.0">
+<exposed-subsystems>*</exposed-subsystems>
+<allowed-metric-namespaces>*</allowed-metric-namespaces>
+</subsystem>
+
+        <!-- Socket binding group должен быть на верхнем уровне -->
+<socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+<socket-binding name="http" port="${jboss.http.port:8080}"/>
+<socket-binding name="https" port="${jboss.https.port:8443}"/>
+<socket-binding name="ajp" port="${jboss.ajp.port:8009}"/>
+<socket-binding name="prometheus-metrics" port="9090"/>
+</socket-binding-group>
+
+
+
+        <!-- Expose Prometheus Endpoint -->
+<subsystem xmlns="urn:jboss:domain:undertow:4.0">
+<buffer-cache name="default"/>
+<server name="default-server">
+    <ajp-listener name="ajp" socket-binding="ajp"/>
+    <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true"/>
+    <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
+    <host name="default-host" alias="localhost">
+        <location name="/metrics" handler="prometheus-metrics"/>
+    </host>
+</server>
+<servlet-container name="default">
+    <jsp-configuration/>
+</servlet-container>
+<handlers>
+    <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
+    <handler name="prometheus-metrics" class-name="io.prometheus.client.exporter.MetricsServlet"/>
+    <handler name="prometheus-handler" class-name="io.prometheus.client.exporter.MetricsServlet"/>
+</handlers>
+<server name="default-server">
+    <host name="default-host" alias="localhost">
+        <!-- Добавить этот location -->
+        <location name="/metrics" handler="prometheus-handler"/>
+    </host>
+</server>
+</subsystem>

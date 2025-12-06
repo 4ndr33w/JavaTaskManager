@@ -1,0 +1,104 @@
+version: '3.8'
+
+services:
+
+  logstash:
+    container_name: logstash
+    profiles:
+      - logstash
+    build:
+      context: logstash/
+      args:
+        ELASTIC_VERSION: 8.17.4
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - 5044:5044
+      - 50000:50000/tcp
+      - 50000:50000/udp
+      - 9600:9600
+    environment:
+      LS_JAVA_OPTS: -Xms1g -Xmx1g
+      #LOGSTASH_INTERNAL_PASSWORD: admin
+    networks:
+      - elk
+      - task-manager-net
+    restart: always
+
+#  setup:
+#    profiles:
+#      - setup
+#    build:
+#      context: setup/
+#      args:
+#        ELASTIC_VERSION: 8.17.4
+#    init: true
+#    volumes:
+#      - ./setup/entrypoint.sh:/entrypoint.sh:ro,Z
+#      - ./setup/lib.sh:/lib.sh:ro,Z
+#      - ./setup/roles:/roles:ro,Z
+#    environment:
+#      xpack.license.self_generated.type: base
+#      clustername: docker-cluster
+#      ELASTIC_PASSWORD: admin
+#      LOGSTASH_INTERNAL_PASSWORD: admin
+#      KIBANA_SYSTEM_PASSWORD: admin
+#      METRICBEAT_INTERNAL_PASSWORD: admin
+#      FILEBEAT_INTERNAL_PASSWORD: admin
+#      HEARTBEAT_INTERNAL_PASSWORD: admin
+#      MONITORING_INTERNAL_PASSWORD: admin
+#      BEATS_SYSTEM_PASSWORD: admin
+#    networks:
+#      - elk
+#    depends_on:
+#      - elasticsearch
+
+#  elasticsearch:
+#    container_name: elasticsearch
+#    build:
+#      context: elasticsearch/
+#      args:
+#        ELASTIC_VERSION: 8.17.4
+#    volumes:
+#      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,Z
+#      - elasticsearch-data:/usr/share/elasticsearch/data:Z
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+#    environment:
+#      node.name: elasticsearch
+#      ES_JAVA_OPTS: -Xms1g -Xmx1g
+#      ELASTIC_PASSWORD: admin
+#      discovery.type: single-node
+#    networks:
+#      - elk
+#    restart: always
+
+#  kibana:
+#    container_name: kibana
+#    build:
+#      context: kibana/
+#      args:
+#        ELASTIC_VERSION: 8.17.4
+#    volumes:
+#      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro,Z
+#    ports:
+#      - 5601:5601
+#    environment:
+#      SERVER_NAME: kibana
+#      KIBANA_SYSTEM_PASSWORD: admin
+#    networks:
+#      - elk
+#    depends_on:
+#      - elasticsearch
+#    restart: always
+
+networks:
+  elk:
+    driver: bridge
+  task-manager-net:
+    external: true  # Подключаемся к внешней сети
+
+volumes:
+  elasticsearch-data: {}  # Локальный том для данных Elasticsearch

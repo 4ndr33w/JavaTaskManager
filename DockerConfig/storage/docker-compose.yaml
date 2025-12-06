@@ -1,0 +1,105 @@
+services:
+
+  mongodb-base:
+    image: mongo:6.0.8
+    container_name: mongodb-base
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: mongodb
+    networks:
+      - task-manager-net
+      - mongo-net
+    volumes:
+      - mongo-storage-data:/var/lib/mongo/data
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name={{.Name}}"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+
+  mongo-express-base:
+    image: mongo-express:1.0.0
+    container_name: mongo-express-base
+    restart: unless-stopped
+    networks:
+      - mongo-net
+    ports:
+      - "28082:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_URL: "mongodb-base://admin:admin@mongodb-base:27018/mongodb?authSource=admin"
+      ME_CONFIG_BASICAUTH: "false"
+    depends_on:
+      mongodb-base:
+        condition: service_healthy
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "env=dev,name={{.Name}}"
+        tag: "{{.Name}}"
+
+  minio:
+    image: quay.io/minio/minio
+    container_name: minio
+    hostname: minio
+    ports:
+      - "9000:9000"  # API порт
+      - "9001:9001"  # Console порт
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: admin-password
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    restart: unless-stopped
+    networks:
+      - task-manager-net
+
+  redis:
+    image: 'redis:7.0.11'
+    restart: unless-stopped
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - task-manager-net
+      - redis-net
+    ports:
+      - "6379:6379"
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name={{.Name}}"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+
+  redisinsight:
+    image: redis/redisinsight:2.70.0
+    container_name: redisinsight
+    ports:
+      - "5540:5540"
+    restart: unless-stopped
+    networks:
+      - redis-net
+
+
+volumes:
+  mongo-storage-data: {}
+  redis_data: {}
+  minio_data: {}
+
+networks:
+  task-manager-net:
+    driver: bridge
+    external: true
+  mongo-net:
+    driver: bridge
+    external: true
+  redis-net:
+    driver: bridge

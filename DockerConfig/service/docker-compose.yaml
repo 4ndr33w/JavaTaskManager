@@ -1,0 +1,139 @@
+services:
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 200m
+    networks:
+      - task-manager-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2.4
+    container_name: keycloak
+    restart: unless-stopped
+    ports:
+      - "8180:8080"
+      - "9000:9000"
+    environment:
+      KC_METRICS_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KC_HTTP_ENABLED: "true"
+      KC_HTTP_MANAGEMENT_PORT: 9000
+      KC_FEATURE_TECHNICAL_STORAGE_FILESYSTEM_ENABLED: "true"
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak_db
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_DB_SCHEMA: public
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    #    command: ["start-dev"]
+    command: ["start-dev", "--import-realm"] #при первом запуске кейклока с пустой базой
+    volumes:
+      - ./keycloak-setup:/opt/keycloak/data/import
+    networks:
+      - task-manager-net
+      - keycloak-net
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name={{.Name}}"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+    deploy:
+      resources:
+        limits:
+          memory: 1000m
+
+  keycloak-db:
+    image: postgres:18-alpine
+    container_name: keycloak-db
+    ports:
+      - "5440:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - keycloak_data:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - keycloak-net
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name=database"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+    labels:
+      - "env=dev"        # Лейблы для контейнера
+      - "name={{.Name}}"
+
+  camunda:
+    image: camunda/camunda-bpm-platform:wildfly-7.18.0
+    container_name: camunda
+    ports:
+      - "9080:8080"
+      - "9990:9990" # порт для сбора метрик
+    environment:
+      - CAMP_SERVER_BASE_URL=http://localhost:9080/
+      - CAMP_SERVER_JDBC_URL=jdbc:postgresql://camunda-db:5432/camunda_db
+      - CAMP_SERVER_JDBC_DRIVER=org.postgresql.Driver
+      - CAMP_SERVER_JDBC_USERNAME=postgres
+      - CAMP_SERVER_JDBC_PASSWORD=postgres
+    volumes:
+      - "./data:/opt/camunda/server/wildfly/standalone/data"
+      - "./config/standalone-full-ha.xml:/opt/camunda/server/wildfly/standalone/configuration/standalone-full-ha.xml"  # Подключаем конфигурационный файл
+    restart: always
+    networks:
+      - task-manager-net
+      - camunda-net
+
+  camunda-db:
+    image: postgres:18-alpine
+    container_name: camunda-db
+    ports:
+      - "5441:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: camunda_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - camunda_data:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - camunda-net
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name=database"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+    labels:
+      - "env=dev"        # Лейблы для контейнера
+      - "name={{.Name}}"
+
+
+volumes:
+  keycloak_data:
+  camunda_data:
+
+networks:
+  keycloak-net:
+    driver: bridge
+  camunda-net:
+    driver: bridge

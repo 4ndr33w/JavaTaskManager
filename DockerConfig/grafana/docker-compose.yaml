@@ -1,0 +1,120 @@
+version: '3.8'
+
+# перед запуском нужно вручную создать external network: 'monitoring-net'
+networks:
+  task-manager-net:
+    external: true
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  loki-data: {}
+  tempo_data: {}
+
+services:
+
+  grafana:
+    image: grafana/grafana:9.5.6
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: tempoSearch
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    volumes:
+      - "grafana_data:/var/lib/grafana"
+      - "./config/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml"
+    networks:
+      - task-manager-net
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  prometheus:
+    # ------------------------------------
+    # Из Grafana к Prometheus обращаемся
+    # через 'http://prometheus:9090/'
+    # ------------------------------------
+    image: prom/prometheus:v2.46.0
+    container_name: prometheus
+    volumes:
+      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "prometheus_data:/prometheus"
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=200h"
+      - "--web.enable-lifecycle"
+    ports:
+      - "9090:9090"
+    networks:
+      - task-manager-net
+    restart: unless-stopped
+
+  loki:
+    # ------------------------------------
+    # Из Grafana к Loki обращаемся
+    # через 'http://loki:3100'
+    # ------------------------------------
+    image: "grafana/loki:2.9.0"
+    container_name: loki
+    ports:
+      - "3100:3100"
+    #  - "3100:3100" port closed because loki does not support basic auth
+    volumes:
+      # touch /mnt/common_volume/swarm/grafana/config/loki.yaml;
+      # mkdir -p /mnt/common_volume/grafana/loki-data;
+      - ./config/loki.yml:/etc/loki/loki.yml:ro
+      - loki-data:/loki
+    command:
+      - "--config.file=/etc/loki/loki.yml"
+    user: "root"
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        order: stop-first
+      resources:
+        limits:
+          memory: 1024M
+    networks:
+      - task-manager-net
+
+  tempo:
+    # ------------------------------------
+    # Из Grafana к Tempo обращаемся
+    # через 'http://tempo:3200'
+    # ------------------------------------
+    image: grafana/tempo:2.3.1
+    container_name: tempo
+    ports:
+      - "3200:3200"    # Tempo native port
+      - "9095:9095"    # gRPC
+      - "4317:4317"    # OpenTelemetry gRPC
+      - "4318:4318"    # OpenTelemetry HTTP
+      - "9411:9411"    # Zipkin
+      # ----------------------------
+      - "14269:14268"  # Jaeger
+      #- "24268:14268"  # ← Изменен внешний порт
+      #- "14250:14250"
+
+      #- "6831:6831/udp" # Jaeger thrift_compact ← новый порт
+      #- "6832:6832/udp" # Jaeger thrift_binary ← новый порт
+      # ----------------------------
+    command: [
+      "-config.file=/etc/tempo.yml"
+    ]
+    volumes:
+      - ./config/tempo.yml:/etc/tempo.yml
+      - tempo_data:/tmp/tempo
+    networks:
+      - task-manager-net
+
+  promtail:
+    image: grafana/promtail:2.9.0
+    container_name: promtail
+    volumes:
+      - ./config/promtail.yml:/etc/promtail/promtail.yml
+    networks:
+      - task-manager-net

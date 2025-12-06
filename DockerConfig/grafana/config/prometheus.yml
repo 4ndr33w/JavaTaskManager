@@ -1,0 +1,58 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Мониторинг самого Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Мониторинг Kafka через JMX-Agent
+  - job_name: 'kafka-jmx'
+    static_configs:
+      - targets: ['kafka1:6600', 'kafka2:6600', 'kafka3:6600']
+    scrape_interval: 10s
+    metrics_path: /metrics
+
+  # Мониторинг Camunda
+  - job_name: 'camunda'
+    static_configs:
+      - targets: ['camunda:9990']
+    scrape_interval: 10s
+    metrics_path: /metrics
+
+  # Spring-Boot-приложение
+  - job_name: 'spring-app'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+
+      - targets: [ 'host.docker.internal:8087' ]
+        labels:
+          application: 'employee-auth'
+          instance: 'employee-auth-8087'
+
+      - targets: [ 'host.docker.internal:8091' ]
+        labels:
+          application: 'FrontendPracticeService'
+          instance: 'frontend-practice-8091'
+
+      - targets: [ 'host.docker.internal:901' ]
+        labels:
+          application: 'authentication-service'
+          instance: 'authentication-service-901'
+
+      - targets: [ 'host.docker.internal:902' ]
+        labels:
+          application: 'users-service'
+          instance: 'users-service-902'
+
+      - targets: [ 'host.docker.internal:900' ]
+        labels:
+          application: 'api-gateway'
+          instance: 'api-gateway-900'
+
+      - targets: [ 'host.docker.internal:999' ]
+        labels:
+          application: 'discovery-server'
+          instance: 'discovery-server-999'

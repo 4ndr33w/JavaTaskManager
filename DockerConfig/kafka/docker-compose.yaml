@@ -1,0 +1,121 @@
+version: '3.8'
+
+networks:
+  kafka-net:
+    driver: bridge
+  task-manager-net:
+    external: true
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: zookeeper
+    hostname: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka-net
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    hostname: kafka-ui
+    depends_on:
+      - zookeeper
+    ports:
+      - "9094:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+    networks:
+      - kafka-net
+
+  kafka1:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka1
+    hostname: kafka1
+    depends_on:
+      - zookeeper
+    ports:
+      - "9091:9092"     # http://kafka1:9091 - порт для доступа из других docker-контейнеров
+      - "29091:29091"   # Порт, пробрасываемый наружу в localhost
+      - "6601:6600"     # Порт для отправки метрик в Prometheus через JMX JavaAgent
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG_RETENTION_TIME_MS: 432000000
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29091
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,PLAINTEXT_HOST://localhost:29091
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_OPTS: "-javaagent:/usr/lib/jmx_prometheus_javaagent-0.18.0.jar=6600:/etc/prometheus/kafka-2-0-0.yml"
+    volumes:
+      - "./jmx_prometheus_javaagent-0.18.0.jar:/usr/lib/jmx_prometheus_javaagent-0.18.0.jar"
+      - "./kafka-2-0-0.yml:/etc/prometheus/kafka-2-0-0.yml"
+    networks:
+      - kafka-net
+      - task-manager-net
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka2
+    hostname: kafka2
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"     # http://kafka2:9092 - порт для доступа из других docker-контейнеров
+      - "29092:29092"   # Порт, пробрасываемый наружу в localhost
+      - "6602:6600"     # Порт для отправки метрик в Prometheus через JMX JavaAgent
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_LOG_RETENTION_TIME_MS: 432000000
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_OPTS: "-javaagent:/usr/lib/jmx_prometheus_javaagent-0.18.0.jar=6600:/etc/prometheus/kafka-2-0-0.yml"
+    volumes:
+      - "./jmx_prometheus_javaagent-0.18.0.jar:/usr/lib/jmx_prometheus_javaagent-0.18.0.jar"
+      - "./kafka-2-0-0.yml:/etc/prometheus/kafka-2-0-0.yml"
+    networks:
+      - kafka-net
+      - task-manager-net
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka3
+    hostname: kafka3
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9092"     # http://kafka3:9093 - порт для доступа из других docker-контейнеров
+      - "29093:29093"   # Порт, пробрасываемый наружу в localhost
+      - "6603:6600"     # Порт для отправки метрик в Prometheus через JMX JavaAgent
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_LOG_RETENTION_TIME_MS: 432000000
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092,PLAINTEXT_HOST://localhost:29093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+      KAFKA_OPTS: "-javaagent:/usr/lib/jmx_prometheus_javaagent-0.18.0.jar=6600:/etc/prometheus/kafka-2-0-0.yml"
+    volumes:
+      - "./jmx_prometheus_javaagent-0.18.0.jar:/usr/lib/jmx_prometheus_javaagent-0.18.0.jar"
+      - "./kafka-2-0-0.yml:/etc/prometheus/kafka-2-0-0.yml"
+    networks:
+      - kafka-net
+      - task-manager-net
