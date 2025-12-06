@@ -1,0 +1,29 @@
+server:
+  port: 900
+
+spring:
+  application:
+    name: discovery-server
+
+  config:
+    import: optional:file:.env[.properties]
+
+  logging:
+    level:
+      root: INFO
+      project.task.manager.user_service.aspect: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+
+eureka:
+  instance:
+    hostname: ${DISCOVERY_SERVER_HOST}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/

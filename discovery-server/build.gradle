@@ -1,0 +1,38 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'project.task.manager'
+version = '1.0.0'
+description = 'Discovery Server of Task Manager Project'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server:4.3.0'
+
+	implementation 'io.micrometer:micrometer-core:1.16.0'
+	implementation 'io.micrometer:micrometer-registry-prometheus:1.16.0'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation 'org.codehaus.janino:janino:3.1.10'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+	implementation 'org.springframework.boot:spring-boot-starter'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
