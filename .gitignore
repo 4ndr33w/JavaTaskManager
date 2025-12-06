@@ -1,5 +1,11 @@
 .idea
 .gigaide
+.gradle
+build.gradle
+gradlew
+gradlew.bat
+settings.gradle
+.gitattributes
 
 DockerConfig/elk/elasticsearch/.dockerignore
 DockerConfig/elk/extensions/

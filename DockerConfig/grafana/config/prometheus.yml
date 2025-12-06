@@ -27,32 +27,32 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
 
-      - targets: [ 'host.docker.internal:8087' ]
+      - targets: [ 'host.docker.internal:900' ]
         labels:
-          application: 'employee-auth'
-          instance: 'employee-auth-8087'
+          application: 'discovery-server'
+          instance: 'discovery-server-900'
+
+      - targets: [ 'host.docker.internal:901' ]
+        labels:
+          application: 'api-gateway'
+          instance: 'api-gateway-901'
+
+      - targets: [ 'host.docker.internal:902' ]
+        labels:
+          application: 'users-service'
+          instance: 'user-service-902'
+
+      - targets: [ 'host.docker.internal:903' ]
+        labels:
+          application: 'project-service'
+          instance: 'project-service-903'
+
+      - targets: [ 'host.docker.internal:904' ]
+        labels:
+          application: 'notifications-service'
+          instance: 'notifications-service-904'
 
       - targets: [ 'host.docker.internal:8091' ]
         labels:
           application: 'FrontendPracticeService'
           instance: 'frontend-practice-8091'
-
-      - targets: [ 'host.docker.internal:901' ]
-        labels:
-          application: 'authentication-service'
-          instance: 'authentication-service-901'
-
-      - targets: [ 'host.docker.internal:902' ]
-        labels:
-          application: 'users-service'
-          instance: 'users-service-902'
-
-      - targets: [ 'host.docker.internal:900' ]
-        labels:
-          application: 'api-gateway'
-          instance: 'api-gateway-900'
-
-      - targets: [ 'host.docker.internal:999' ]
-        labels:
-          application: 'discovery-server'
-          instance: 'discovery-server-999'
