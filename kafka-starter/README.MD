@@ -11,6 +11,17 @@ Kafka-starter. С конвертером
 Так что нужно либо указать в конфиге стартера свой порт, либо запустить кафку локально на этом порте
 
 ## опубликовать стартер в локальный или удаленный репозиторий
+
+```gradle
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+   ```
+
+```bash
+    ./gradlew publishToMavenLocal
+```
 Если в локальном, то необходимо в нашем приложении указать, что требуется
 брать пакеты из локального репозитория
 и, соответственно, подключить пакет со стартером
@@ -22,7 +33,7 @@ Kafka-starter. С конвертером
         mavenLocal()
     }
     
-	implementation("planner.project:spring-boot-starter-kafka:1.0.0")
+	implementation("project.task.manager:kafka-starter:1.0.0")
 ```
 
 ## Далее:
