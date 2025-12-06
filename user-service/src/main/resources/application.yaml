@@ -1,3 +1,88 @@
+server:
+  port: 902
+
 spring:
   application:
     name: user-service
+  config:
+    import: optional:file:.env[.properties]
+  main:
+    allow-bean-definition-overriding: true # Разрешаем переопределение бинов для kafka-starter
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO:none}
+    properties:
+      hibernate:
+        show_sql: ${SHOW_SQL:true}
+        format_sql: ${SHOW_SQL:true}
+        use_sql_comments: true
+        jdbc:
+          time_zone: UTC
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+  #  profiles:
+  #    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  liquibase:
+    change-log: "classpath:db/changelog/db.changelog-master.yml"
+    enabled: ${LIQUIBASE_ENABLE:true}
+
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      auto-index-creation: true
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1MB
+      max-request-size: 2MB
+      resolve-lazily: false
+
+  kafka:
+    topics:
+      userCreated: ${KAFKA_USER_CREATED_TOPIC}
+      userUpdated: ${KAFKA_USER_UPDATED_TOPIC}
+      messageLifetime: 300000
+
+mongodb:
+  bucket: ${MONGO_GRIDFS_BUCKET}
+  database: ${MONGO_DB}
+
+jwt:
+  accessTokenLifetime: ${JWT_ACCESS_EXPIRATION_MS}
+  refreshTokenLifetime: ${JWT_REFRESH_EXPIRATION_MS}
+  issuer: ${JWT_ISSUER}
+  audience: ${JWT_AUDIENCE}
+  accessPublic: ${JWT_ACCESS_PUBLIC_KEY}
+  refreshPublic: ${JWT_REFRESH_PUBLIC_KEY}
+  accessPrivate: ${JWT_ACCESS_PRIVATE_KEY}
+  refreshPrivate: ${JWT_REFRESH_PRIVATE_KEY}
+
+  logging:
+    level:
+      root: INFO
+      project.task.manager.user_service.aspect: INFO
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
+  instance:
+    preferIpAddress: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+  health:
+    circuitbreakers:
+      enabled: true

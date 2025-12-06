@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: alter-users.sql
+      relativeToChangelogFile: true
+  - include:
+      file: users-insert.sql
+      relativeToChangelogFile: true

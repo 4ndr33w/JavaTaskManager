@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'project.task.manager'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 description = 'User Service of Task Manager Project'
 
 java {
@@ -16,6 +16,7 @@ java {
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 }
 
 ext {
@@ -24,8 +25,35 @@ ext {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'com.auth0:java-jwt:4.5.0'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.3.0'
+
+	implementation 'io.micrometer:micrometer-core'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation 'project.task.manager:kafka-starter:1.0.0'
+
+	implementation 'org.codehaus.janino:janino:3.1.10'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
+	implementation 'org.liquibase:liquibase-core:5.0.0'
+
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	implementation 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	implementation 'org.projectlombok:lombok:1.18.38'
+	annotationProcessor 'org.projectlombok:lombok:1.18.38'
+	compileOnly 'org.projectlombok:lombok:1.18.38'
+
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

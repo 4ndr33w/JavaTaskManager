@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: users.sql
+      relativeToChangelogFile: true
+  - include:
+      file: user-roles.sql
+      relativeToChangelogFile: true
+
+  - include:
+      file: users-insert.sql
+      relativeToChangelogFile: true

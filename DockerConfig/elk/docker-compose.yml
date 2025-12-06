@@ -4,8 +4,8 @@ services:
 
   logstash:
     container_name: logstash
-    profiles:
-      - logstash
+  #  profiles:
+  #    - logstash
     build:
       context: logstash/
       args:

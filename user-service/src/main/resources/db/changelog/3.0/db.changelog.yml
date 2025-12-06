@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: outbox.sql
+      relativeToChangelogFile: true
