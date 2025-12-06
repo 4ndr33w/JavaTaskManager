@@ -40,7 +40,12 @@ scrape_configs:
       - targets: [ 'host.docker.internal:902' ]
         labels:
           application: 'users-service'
-          instance: 'user-service-902'
+          instance: 'user-service-local'
+
+      - targets: [ 'user-service:902' ]
+        labels:
+          application: 'users-service'
+          instance: 'user-service-docker'
 
       - targets: [ 'host.docker.internal:903' ]
         labels:

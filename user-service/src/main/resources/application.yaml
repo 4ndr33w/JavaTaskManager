@@ -27,8 +27,6 @@ spring:
           time_zone: UTC
         dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
-  #  profiles:
-  #    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   liquibase:
     change-log: "classpath:db/changelog/db.changelog-master.yml"
@@ -86,3 +84,7 @@ management:
   health:
     circuitbreakers:
       enabled: true
+
+scheduler:
+  kafka:
+    cron: "0 * * * * *"

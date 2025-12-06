@@ -37,7 +37,11 @@ dependencies {
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-	implementation 'project.task.manager:kafka-starter:1.0.0'
+    // Для локального запуска
+	//implementation 'project.task.manager:kafka-starter:1.0.0'
+
+    // Для запуска в Докере (Dockerfile не может подтянуть kafka-starter из локального репозитория)
+	implementation files ('../kafka-starter/build/libs/kafka-starter-1.0.0.jar')
 
 	implementation 'org.codehaus.janino:janino:3.1.10'
 	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'

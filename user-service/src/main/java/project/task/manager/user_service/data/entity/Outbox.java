@@ -1,5 +1,6 @@
 package project.task.manager.user_service.data.entity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,9 +19,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import project.task.manager.user_service.data.enums.EventStatus;
 import project.task.manager.user_service.data.enums.EventType;
-import project.task.manager.user_service.data.enums.Role;
-
-import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -47,7 +45,10 @@ public class Outbox {
 	private EventStatus status;
 	@Column(columnDefinition = "jsonb")
 	@JdbcTypeCode(SqlTypes.JSON)
-	private String payload;
+	private JsonNode header;
+	@Column(columnDefinition = "jsonb")
+	@JdbcTypeCode(SqlTypes.JSON)
+	private JsonNode payload;
 	private Integer retryCount;
 	private ZonedDateTime createdAt;
 	private ZonedDateTime sentAt;
