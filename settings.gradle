@@ -1,0 +1,5 @@
+rootProject.name = 'task.manager'
+
+include 'user-service'
+include 'project-service'
+include 'discovery-server'
