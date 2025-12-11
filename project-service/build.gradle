@@ -1,0 +1,73 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.7'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'project.task.manager'
+version = '1.0.0'
+description = 'Project Service of Task Manager Project'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2025.0.0")
+	set('eurekaClientVersion', '4.3.0')
+	set('logbackEncoderVersion', '9.0')
+	set('mapstructVersion', '1.6.3')
+	set('lombokVersion', '1.18.38')
+	set('javaJwtVersion', '4.5.0')
+	set('janinoVersion', '3.1.12')
+	set('openapiStarterVersion', '2.8.14')
+	set('liquibaseVersion', '5.0.0')
+	set('micrometerVersion', '1.16.0')
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openapiStarterVersion}"
+
+	implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${eurekaClientVersion}"
+
+	implementation 'org.liquibase:liquibase-core:5.0.0'
+
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	implementation 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+	implementation 'io.micrometer:micrometer-core'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation 'org.codehaus.janino:janino:3.1.10'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+	implementation 'org.projectlombok:lombok:1.18.38'
+	annotationProcessor 'org.projectlombok:lombok:1.18.38'
+	compileOnly 'org.projectlombok:lombok:1.18.38'
+
+	runtimeOnly 'org.postgresql:postgresql'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
