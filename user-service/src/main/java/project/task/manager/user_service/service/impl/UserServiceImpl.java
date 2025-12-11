@@ -126,7 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		}
 		User updatedUser = userMapper.mapUpdateToEntity(update, existingUser);
 		Outbox outbox = outboxMapper.mapUpdateToOutbox(existingUser, update);
-		outboxRepository.save(outbox);
+		var result = outboxRepository.save(outbox);
 		if(existingUser.isHasImage()) {
 			byte[] userImage = imageService.getImageByUserId(authenticatedUserId);
 			return userMapper.mapToDto(updatedUser, userImage);
@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			byte[] userImage = imageService.getImageByUserId(id);
 			return userMapper.mapToDto(existingUser, userImage);
 		}
-		return userMapper.mapToDto(getUserFromSecurityContext());
+		return userMapper.mapToDto(existingUser);
 	}
 	
 	@Override

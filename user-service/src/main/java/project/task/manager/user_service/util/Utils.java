@@ -1,6 +1,15 @@
 package project.task.manager.user_service.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import project.task.manager.user_service.data.entity.Outbox;
+import project.task.manager.user_service.data.enums.EventType;
+import project.task.manager.user_service.data.event.BaseEvent;
+import project.task.manager.user_service.data.event.EventHeaderData;
+import project.task.manager.user_service.data.event.UserUpdatedEvent;
+import project.task.manager.user_service.kafka.properties.KafkaTopicProperties;
 
 import java.util.UUID;
 
@@ -9,7 +18,11 @@ import java.util.UUID;
  * @version 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class Utils {
+	
+	private final KafkaTopicProperties kafkaTopicProperties;
+	private final ObjectMapper objectMapper;
 		
 		public String mapRandomPassword() {
 				String random = UUID.randomUUID().toString();
@@ -27,4 +40,39 @@ public class Utils {
 				}
 				return sb.toString().substring(0, 9);
 		}
+	
+	public String getTopicName(EventType eventType) {
+		switch(eventType) {
+			case USER_UPDATED -> {
+				return kafkaTopicProperties.topics().userUpdated().name();
+			}
+			case USER_DELETED -> {
+				return kafkaTopicProperties.topics().userDeleted().name();
+			}
+			default -> {
+				return kafkaTopicProperties.topics().userCreated().name();
+			}
+		}
+	}
+	
+	public EventHeaderData getEventHeaderData(Outbox outbox) {
+		return new EventHeaderData(
+				outbox.getId(),
+				outbox.getEventType(),
+				kafkaTopicProperties.messageLifetime(),
+				outbox.getAggregateId(),
+				outbox.getRetryCount(),
+				outbox.getCreatedAt()
+		);
+	}
+	
+	public BaseEvent getEventPayload(Outbox outbox) {
+		try {
+			var payload = outbox.getPayload().toString();
+			UserUpdatedEvent event = objectMapper.readValue(payload, UserUpdatedEvent.class);
+			return event;
+		} catch(JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

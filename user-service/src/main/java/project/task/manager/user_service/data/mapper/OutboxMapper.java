@@ -21,7 +21,7 @@ import project.task.manager.user_service.data.request.UserUpdateDto;
 )
 @DecoratedWith(OutboxMapperDecorator.class)
 public interface OutboxMapper {
-	
-	@Mapping(source = "user.id", target = "aggregateId")
+
+	@Mapping(target = "id", ignore = true)
 	Outbox mapUpdateToOutbox(User user, UserUpdateDto update);
 }

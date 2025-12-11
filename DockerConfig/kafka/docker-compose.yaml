@@ -40,7 +40,7 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9091:9092"     # http://kafka1:9091 - порт для доступа из других docker-контейнеров
+      - "9091:9092"     # http://kafka1:9092 - порт для доступа из других docker-контейнеров
       - "29091:29091"   # Порт, пробрасываемый наружу в localhost
       - "6601:6600"     # Порт для отправки метрик в Prometheus через JMX JavaAgent
     environment:
@@ -98,7 +98,7 @@ services:
     depends_on:
       - zookeeper
     ports:
-      - "9093:9092"     # http://kafka3:9093 - порт для доступа из других docker-контейнеров
+      - "9093:9092"     # http://kafka3:9092 - порт для доступа из других docker-контейнеров
       - "29093:29093"   # Порт, пробрасываемый наружу в localhost
       - "6603:6600"     # Порт для отправки метрик в Prometheus через JMX JavaAgent
     environment:

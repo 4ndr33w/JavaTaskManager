@@ -2,6 +2,7 @@ package project.task.manager.user_service.data.event;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import project.task.manager.user_service.data.enums.EventType;
 
 import java.util.UUID;
 
@@ -19,9 +20,6 @@ import java.util.UUID;
 		@JsonSubTypes.Type(value = UserUpdatedEvent.class, name = "UserUpdatedEvent")
 })
 public interface BaseEvent {
-	
-	UUID getEventId();
-	void setEventId(UUID eventId);
 	UUID getUserId();
-	String getLogin();
+	EventType getEventType();
 }

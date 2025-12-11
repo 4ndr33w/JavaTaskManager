@@ -11,7 +11,6 @@ import project.task.manager.user_service.data.mapper.decorator.UserMapperDecorat
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
-import project.task.manager.user_service.security.AppUserDetails;
 
 /**
  * Mapper-интерфейс для преобразования моделей пользователей между объектами доменного уровня и DTO-представлениями.
@@ -52,6 +51,7 @@ public interface UserMapper {
      * @param entity Пользовательская сущность
      * @return DTO с данными пользователя
      */
+
     UserResponseDto mapToDto(User entity);
 
     /**
@@ -74,6 +74,5 @@ public interface UserMapper {
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User mapUpdateToEntity(UserUpdateDto updateDto, @MappingTarget User user);
-
-		AppUserDetails mapEntityToUserDetails(User user);
+    
 }

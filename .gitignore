@@ -6,6 +6,7 @@ gradlew
 gradlew.bat
 settings.gradle
 .gitattributes
+Dockerfile
 
 DockerConfig/elk/elasticsearch/.dockerignore
 DockerConfig/elk/extensions/

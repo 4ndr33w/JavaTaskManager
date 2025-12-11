@@ -38,14 +38,14 @@ public class Outbox {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
+	/**
+	 * userId
+	 */
 	private UUID aggregateId;
 	@Enumerated(EnumType.STRING)
 	private EventType eventType;
 	@Enumerated(EnumType.STRING)
 	private EventStatus status;
-	@Column(columnDefinition = "jsonb")
-	@JdbcTypeCode(SqlTypes.JSON)
-	private JsonNode header;
 	@Column(columnDefinition = "jsonb")
 	@JdbcTypeCode(SqlTypes.JSON)
 	private JsonNode payload;

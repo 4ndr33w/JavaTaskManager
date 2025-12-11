@@ -6,8 +6,19 @@ spring:
     name: user-service
   config:
     import: optional:file:.env[.properties]
-  main:
-    allow-bean-definition-overriding: true # Разрешаем переопределение бинов для kafka-starter
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      acks: -1
+      retries: 5
+      properties:
+        retry.backoff.ms: 2000
+        delivery.timeout.ms: 120000
+        request.timeout.ms: 30000
+        max.in.flight.requests.per.connection: 5
+        enable.idempotence: true
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -44,11 +55,21 @@ spring:
       max-request-size: 2MB
       resolve-lazily: false
 
-  kafka:
-    topics:
-      userCreated: ${KAFKA_USER_CREATED_TOPIC}
-      userUpdated: ${KAFKA_USER_UPDATED_TOPIC}
-      messageLifetime: 300000
+kafka:
+  topics:
+    userCreated:
+      name: ${KAFKA_USER_CREATED_TOPIC}
+      partitions: 3
+      replication-factor: 1
+    userUpdated:
+      name: ${KAFKA_USER_UPDATED_TOPIC}
+      partitions: 3
+      replication-factor: 1
+    userDeleted:
+      name: ${KAFKA_USER_DELETED_TOPIC}
+      partitions: 3
+      replication-factor: 1
+  messageLifetime: 300000
 
 mongodb:
   bucket: ${MONGO_GRIDFS_BUCKET}
@@ -87,4 +108,4 @@ management:
 
 scheduler:
   kafka:
-    cron: "0 * * * * *"
+    cron: "0/10 * * * * *"

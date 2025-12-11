@@ -21,6 +21,15 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2025.0.0")
+	set('eurekaClientVersion', '4.3.0')
+	set('logbackEncoderVersion', '9.0')
+	set('mapstructVersion', '1.6.3')
+	set('lombokVersion', '1.18.38')
+	set('javaJwtVersion', '4.5.0')
+	set('janinoVersion', '3.1.12')
+	set('openapiStarterVersion', '2.8.14')
+	set('liquibaseVersion', '5.0.0')
+	set('micrometerVersion', '1.16.0')
 }
 
 dependencies {
@@ -29,25 +38,21 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'com.auth0:java-jwt:4.5.0'
+	implementation "com.auth0:java-jwt:${javaJwtVersion}"
 
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.3.0'
+	implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${eurekaClientVersion}"
 
-	implementation 'io.micrometer:micrometer-core'
-	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation "io.micrometer:micrometer-core:${micrometerVersion}"
+	implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // Для локального запуска
-	//implementation 'project.task.manager:kafka-starter:1.0.0'
+	implementation 'org.springframework.kafka:spring-kafka'
 
-    // Для запуска в Докере (Dockerfile не может подтянуть kafka-starter из локального репозитория)
-	implementation files ('../kafka-starter/build/libs/kafka-starter-1.0.0.jar')
+	implementation "org.codehaus.janino:janino:${janinoVersion}"
+	implementation "net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}"
 
-	implementation 'org.codehaus.janino:janino:3.1.10'
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14'
-	implementation 'org.liquibase:liquibase-core:5.0.0'
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openapiStarterVersion}"
+	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
 
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	implementation 'org.mapstruct:mapstruct-processor:1.6.3'
