@@ -20,9 +20,9 @@ import java.util.UUID;
 @FeignClient(name = "${users.client.name}", url = "${users.client.host}")
 public interface UserServiceClient {
 	
-	@GetMapping("/api/v1/admin/{userId}")
+	@GetMapping("/user-service/api/v1/admin/{userId}")
 	ResponseEntity<UserDto> getUserById(@PathVariable UUID userId, @RequestHeader("Authorization") String authHeader);
 	
-	@PostMapping("/api/v1/users/ids")
+	@PostMapping("/user-service/api/v1/users/ids")
 	ResponseEntity<List<UserDto>> getUsersByIds(@RequestBody Set<UUID> userIds, @RequestHeader("Authorization") String authHeader);
 }

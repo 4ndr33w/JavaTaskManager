@@ -1,12 +1,17 @@
 server:
   port: 903
+  servlet:
+    context-path: /project-service
 
 spring:
   application:
     name: project-service
   config:
     import: optional:file:.env[.properties]
-
+  cloud:
+    config:
+      uri: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}
+      fail-fast: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}

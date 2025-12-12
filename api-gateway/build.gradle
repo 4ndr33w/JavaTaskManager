@@ -5,8 +5,19 @@ plugins {
 }
 
 group = 'project.task.manager'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 description = 'API Gateway Service of Task Manager Project'
+
+ext {
+	set('springCloudVersion', "2025.0.0")
+	set('eurekaClientVersion', '4.3.0')
+	set('logbackEncoderVersion', '9.0')
+	set('janinoVersion', '3.1.12')
+	set('openapiStarterVersion', '2.8.14')
+	set('micrometerVersion', '1.16.0')
+	set('cloudGatewayStarterVersionVersion', '4.2.0')
+	set('resilience4jVersionVersion', '3.3.0')
+}
 
 java {
 	toolchain {
@@ -22,6 +33,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation "org.springframework.cloud:spring-cloud-starter-gateway:${cloudGatewayStarterVersionVersion}"
+	implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j:${resilience4jVersionVersion}"
+
+
+	implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:${openapiStarterVersion}"
+
+	implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${eurekaClientVersion}"
+
+	implementation "io.micrometer:micrometer-core:${micrometerVersion}"
+	implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation "org.codehaus.janino:janino:${janinoVersion}"
+	implementation "net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}"
 }
 
 tasks.named('test') {

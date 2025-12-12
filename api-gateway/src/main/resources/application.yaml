@@ -1,3 +1,51 @@
+server:
+  port: 901
 spring:
   application:
     name: api-gateway
+  config:
+    import: optional:file:.env[.properties]
+  cloud:
+    config:
+      uri: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}
+      fail-fast: true
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # ← Включите Discovery Client
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+        - id: project-service
+          uri: lb://PROJECT-SERVICE
+          predicates:
+            - Path=/project-service/**
+
+
+springdoc:
+  swagger-ui:
+    use-root-path: true
+    urls:
+      - name: user-service
+        url: /user-service/v3/api-docs
+      - name: project-service
+        url: /project-service/v3/api-docs
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
