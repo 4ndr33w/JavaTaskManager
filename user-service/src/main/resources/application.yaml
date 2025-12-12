@@ -1,11 +1,17 @@
 server:
   port: 902
+  servlet:
+    context-path: /user-service
 
 spring:
   application:
     name: user-service
   config:
     import: optional:file:.env[.properties]
+  cloud:
+    config:
+      uri: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}
+      fail-fast: true
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
     producer:
@@ -95,7 +101,9 @@ eureka:
     service-url:
       defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
   instance:
-    preferIpAddress: true
+    prefer-ip-address: false
+    hostname: ${spring.application.name}
+    instance-id: ${HOST_NAME:user-service}:${APP_NAME:user-service}:${server.port}
 
 management:
   endpoints:
