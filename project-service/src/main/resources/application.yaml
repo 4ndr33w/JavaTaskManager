@@ -47,7 +47,9 @@ eureka:
     service-url:
       defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
   instance:
-    preferIpAddress: true
+    prefer-ip-address: false
+    hostname: ${spring.application.name}
+    instance-id: ${HOST_NAME:project-service}:${APP_NAME:project-service}:${server.port}
 
 management:
   endpoints:
