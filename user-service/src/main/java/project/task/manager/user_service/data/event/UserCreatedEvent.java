@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import project.task.manager.user_service.data.enums.EventType;
 
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 /**
@@ -21,11 +22,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCreatedEvent implements BaseEvent {
-
+	
+	private UUID messageId;
 	private UUID userId;
 	private EventType eventType;
 	private String email;
 	private String password;
 	private String name;
 	private String lastName;
+	private int retryCount;
+	private ZonedDateTime createdAt;
 }

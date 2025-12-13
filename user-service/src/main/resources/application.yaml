@@ -16,7 +16,7 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: -1
       retries: 5
       properties:

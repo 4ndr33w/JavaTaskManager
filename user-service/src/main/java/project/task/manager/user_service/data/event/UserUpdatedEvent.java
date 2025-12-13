@@ -9,6 +9,7 @@ import lombok.ToString;
 import project.task.manager.user_service.data.enums.EventType;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 /**
@@ -23,10 +24,13 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserUpdatedEvent implements BaseEvent {
 
+	private UUID messageId;
 	private UUID userId;
 	private EventType eventType;
 	private String name;
 	private String lastName;
 	private LocalDate birthDate;
 	private String phone;
+	private int retryCount;
+	private ZonedDateTime createdAt;
 }

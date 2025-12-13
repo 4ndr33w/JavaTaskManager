@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import project.task.manager.user_service.data.entity.Outbox;
 import project.task.manager.user_service.data.enums.EventType;
 import project.task.manager.user_service.data.event.BaseEvent;
-import project.task.manager.user_service.data.event.EventHeaderData;
 import project.task.manager.user_service.data.event.UserUpdatedEvent;
 import project.task.manager.user_service.kafka.properties.KafkaTopicProperties;
 
@@ -55,21 +54,11 @@ public class Utils {
 		}
 	}
 	
-	public EventHeaderData getEventHeaderData(Outbox outbox) {
-		return new EventHeaderData(
-				outbox.getId(),
-				outbox.getEventType(),
-				kafkaTopicProperties.messageLifetime(),
-				outbox.getAggregateId(),
-				outbox.getRetryCount(),
-				outbox.getCreatedAt()
-		);
-	}
-	
 	public BaseEvent getEventPayload(Outbox outbox) {
 		try {
 			var payload = outbox.getPayload().toString();
 			UserUpdatedEvent event = objectMapper.readValue(payload, UserUpdatedEvent.class);
+			event.setMessageId(outbox.getId());
 			return event;
 		} catch(JsonProcessingException e) {
 			throw new RuntimeException(e);

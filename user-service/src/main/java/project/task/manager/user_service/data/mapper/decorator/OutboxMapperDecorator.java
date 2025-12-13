@@ -16,6 +16,8 @@ import project.task.manager.user_service.data.mapper.OutboxMapper;
 import project.task.manager.user_service.data.request.UserUpdateDto;
 import project.task.manager.user_service.kafka.properties.KafkaTopicProperties;
 
+import java.time.ZonedDateTime;
+
 /**
  * @author 4ndr33w
  * @version 1.0
@@ -61,6 +63,8 @@ public abstract class OutboxMapperDecorator implements OutboxMapper {
 					.birthDate(update.birthDate())
 					.phone(update.phone())
 					.eventType(EventType.USER_UPDATED)
+					.retryCount(0)
+					.createdAt(ZonedDateTime.now())
 					.build();
 		}
 		log.error("User or update is null");
