@@ -8,6 +8,14 @@ group = 'project.task.manager'
 version = '1.0.0'
 description = 'Notification Service for Task Manager Project'
 
+ext {
+	set('springCloudVersion', "2025.0.0")
+	set('eurekaClientVersion', '4.3.0')
+	set('logbackEncoderVersion', '9.0')
+	set('janinoVersion', '3.1.12')
+	set('micrometerVersion', '1.16.0')
+}
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -19,6 +27,25 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.projectlombok:lombok:1.18.38'
+	annotationProcessor 'org.projectlombok:lombok:1.18.38'
+	compileOnly 'org.projectlombok:lombok:1.18.38'
+
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+	implementation 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${eurekaClientVersion}"
+
+	implementation "io.micrometer:micrometer-core:${micrometerVersion}"
+	implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	implementation "org.codehaus.janino:janino:${janinoVersion}"
+	implementation "net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}"
+
 	implementation 'org.springframework.boot:spring-boot-starter'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
