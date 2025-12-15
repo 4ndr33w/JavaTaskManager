@@ -91,10 +91,10 @@ jwt:
   accessPrivate: ${JWT_ACCESS_PRIVATE_KEY}
   refreshPrivate: ${JWT_REFRESH_PRIVATE_KEY}
 
-  logging:
-    level:
-      root: INFO
-      project.task.manager.user_service.aspect: INFO
+logging:
+  level:
+    root: INFO
+    project.task.manager.user_service.aspect: INFO
 
 eureka:
   client:
