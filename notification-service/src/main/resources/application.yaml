@@ -7,10 +7,6 @@ spring:
     name: notification-service
   config:
     import: optional:file:.env[.properties]
-  cloud:
-    config:
-      uri: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}
-      fail-fast: true
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
     consumer:
@@ -38,14 +34,38 @@ logging:
 eureka:
   client:
     service-url:
-      defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
+      defaultZone: http://localhost:900/eureka/
+      #defaultZone: http://${DISCOVERY_SERVER_HOST:localhost}:${DISCOVERY_SERVER_PORT:900}/eureka/
   instance:
     prefer-ip-address: false
-    hostname: ${spring.application.name}
-    instance-id: ${HOST_NAME:notification-service}:${APP_NAME:notification-service}:${server.port}
+    #hostname: ${spring.application.name}
+    #instance-id: ${HOST_NAME:notification-service}:${APP_NAME:notification-service}:${server.port}
+
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    username: ${SMTP_USER}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
 
 management:
   endpoints:
     web:
       exposure:
         include: health, info, prometheus, metrics
+
+kafka:
+  topics:
+    userCreated:
+      name: ${KAFKA_USER_CREATED_TOPIC}
+      group: ${KAFKA_USER_CREATED_GROUP}
+    userUpdated:
+      name: ${KAFKA_USER_UPDATED_TOPIC}
+      group: ${KAFKA_USER_UPDATED_GROUP}
+    userDeleted:
+      name: ${KAFKA_USER_DELETED_TOPIC}
+      group: ${KAFKA_USER_DELETED_GROUP}
