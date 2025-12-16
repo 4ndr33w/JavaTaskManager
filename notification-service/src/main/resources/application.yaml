@@ -1,45 +1,11 @@
 server:
   port: 904
-  servlet:
-    context-path: /notification-service
+
 spring:
   application:
     name: notification-service
   config:
     import: optional:file:.env[.properties]
-  kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
-    consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.use.type.headers: true
-        retry.backoff.ms: 2000
-        max-poll-records: 1000
-        max-poll-interval-ms: 600000
-        session-timeout-ms: 15000
-        heartbeat-interval-ms: 5000
-        fetch-max-bytes: 52428800
-        auto-commit-enabled: true
-        auto-commit-interval-ms: 5000
-        auto-offset-reset: earliest
-        retry-backoff-ms: 2000
-        max-retries: 5
-
-logging:
-  level:
-    root: INFO
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:900/eureka/
-      #defaultZone: http://${DISCOVERY_SERVER_HOST:localhost}:${DISCOVERY_SERVER_PORT:900}/eureka/
-  instance:
-    prefer-ip-address: false
-    #hostname: ${spring.application.name}
-    #instance-id: ${HOST_NAME:notification-service}:${APP_NAME:notification-service}:${server.port}
 
   mail:
     host: ${SMTP_HOST}
@@ -52,20 +18,42 @@ eureka:
           auth: true
           starttls.enable: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info, prometheus, metrics
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: project.task.manager.notification_service.kafka.serializer.TaskManagerDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: true
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-kafka:
-  topics:
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
+  instance:
+    prefer-ip-address: true
+
+properties:
+  kafka:
+    consumer:
+      error-handle-key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      error-handle-value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    notification-type-mapping-list:
+      - type: "UserUpdatedEvent"
+        class-name: "project.task.manager.notification_service.data.event.UserUpdatedEvent"
+      - type: "UserCreatedEvent"
+        class-name: "project.task.manager.notification_service.data.event.UserCreatedEvent"
     userCreated:
-      name: ${KAFKA_USER_CREATED_TOPIC}
-      group: ${KAFKA_USER_CREATED_GROUP}
+      topic: ${KAFKA_USER_CREATED_TOPIC}
+      group: ${KAFKA_USER_CREATED_GROUP_ID}
     userUpdated:
-      name: ${KAFKA_USER_UPDATED_TOPIC}
-      group: ${KAFKA_USER_UPDATED_GROUP}
+      topic: ${KAFKA_USER_UPDATED_TOPIC}
+      group: ${KAFKA_USER_UPDATED_GROUP_ID}
     userDeleted:
-      name: ${KAFKA_USER_DELETED_TOPIC}
-      group: ${KAFKA_USER_DELETED_GROUP}
+      topic: ${KAFKA_USER_DELETED_TOPIC}
+      group: ${KAFKA_USER_DELETED_GROUP_ID}
+    header-type-name: "__TypeId__"

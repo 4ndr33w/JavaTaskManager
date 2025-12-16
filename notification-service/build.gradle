@@ -8,14 +8,6 @@ group = 'project.task.manager'
 version = '1.0.0'
 description = 'Notification Service for Task Manager Project'
 
-ext {
-	set('springCloudVersion', "2025.0.0")
-	set('eurekaClientVersion', '4.3.0')
-	set('logbackEncoderVersion', '9.0')
-	set('janinoVersion', '3.1.12')
-	set('micrometerVersion', '1.16.0')
-}
-
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
@@ -26,31 +18,70 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springCloudVersion', "2025.0.0")
+	set('eurekaClientVersion', '4.3.0')
+	set('logbackEncoderVersion', '9.0')
+	set('mapstructVersion', '1.6.3')
+	set('lombokVersion', '1.18.38')
+	set('javaJwtVersion', '4.5.0')
+	set('janinoVersion', '3.1.12')
+	set('openapiStarterVersion', '2.8.14')
+	set('liquibaseVersion', '5.0.0')
+	set('micrometerVersion', '1.16.0')
+}
+
 dependencies {
-	implementation 'org.projectlombok:lombok:1.18.38'
-	annotationProcessor 'org.projectlombok:lombok:1.18.38'
-	compileOnly 'org.projectlombok:lombok:1.18.38'
-
-	//implementation platform('org.springframework.cloud:spring-cloud-dependencies:2024.0.0')
-
-	implementation 'org.mapstruct:mapstruct:1.6.3'
-	implementation 'org.mapstruct:mapstruct-processor:1.6.3'
-	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
-	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+	// ------------------------------------------------------------
+	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.kafka:spring-kafka'
+	// ------------------------------------------------------------
 
+	// Discovery
+	// ------------------------------------------------------------
 	implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:${eurekaClientVersion}"
+	// ------------------------------------------------------------
 
+	// Monitoring
+	// ------------------------------------------------------------
 	implementation "io.micrometer:micrometer-core:${micrometerVersion}"
 	implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	// ------------------------------------------------------------
 
+	// Mapping
+	// ------------------------------------------------------------
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	implementation "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
+	// ------------------------------------------------------------
+
+	// Logging
+	// ------------------------------------------------------------
 	implementation "org.codehaus.janino:janino:${janinoVersion}"
 	implementation "net.logstash.logback:logstash-logback-encoder:${logbackEncoderVersion}"
+	// ------------------------------------------------------------
 
-	implementation 'org.springframework.boot:spring-boot-starter'
+	// Lombok
+	// ------------------------------------------------------------
+	implementation "org.projectlombok:lombok:${lombokVersion}"
+	annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+	compileOnly "org.projectlombok:lombok:${lombokVersion}"
+	// ------------------------------------------------------------
+
+	// Tests
+	// ------------------------------------------------------------
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// ------------------------------------------------------------
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
 }
 
 tasks.named('test') {
