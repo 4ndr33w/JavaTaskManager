@@ -2,7 +2,9 @@ package project.task.manager.notification_service.data.event;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import project.task.manager.notification_service.data.enums.EventType;
+import project.task.manager.notification_service.data.event.abstraction.Event;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -14,8 +16,9 @@ import java.util.UUID;
  * @version 1.0
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserUpdatedEvent implements Serializable {
+public class UserUpdatedEvent extends Event implements Serializable {
 	
 	private UUID messageId;
 	private UUID userId;

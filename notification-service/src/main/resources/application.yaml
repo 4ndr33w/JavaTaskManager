@@ -15,8 +15,11 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true
+          auth: false
           starttls.enable: true
+      debug: true
+    transport:
+      protocol: smtp
 
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER_1},${KAFKA_BOOTSTRAP_SERVER_2},${KAFKA_BOOTSTRAP_SERVER_3}
@@ -43,9 +46,9 @@ properties:
       error-handle-key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       error-handle-value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
     notification-type-mapping-list:
-      - type: "UserUpdatedEvent"
+      - type: "project.task.manager.user_service.data.event.UserUpdatedEvent"
         class-name: "project.task.manager.notification_service.data.event.UserUpdatedEvent"
-      - type: "UserCreatedEvent"
+      - type: "project.task.manager.user_service.data.event.UserCreatedEvent"
         class-name: "project.task.manager.notification_service.data.event.UserCreatedEvent"
     userCreated:
       topic: ${KAFKA_USER_CREATED_TOPIC}
@@ -57,3 +60,24 @@ properties:
       topic: ${KAFKA_USER_DELETED_TOPIC}
       group: ${KAFKA_USER_DELETED_GROUP_ID}
     header-type-name: "__TypeId__"
+
+logging:
+  level:
+    org.springframework.jdbc.datasource.DriverManagerDataSource: DEBUG
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    org.springframework.web: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, prometheus, metrics
+
+notification:
+  email:
+    emailSender: ${EMAIL_SENDER}
+
+users.client:
+  host: ${USER_SERVICE_HOST}
+  name: ${USER_SERVICE_NAME}

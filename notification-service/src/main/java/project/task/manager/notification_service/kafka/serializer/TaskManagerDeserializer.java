@@ -1,10 +1,7 @@
 package project.task.manager.notification_service.kafka.serializer;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
@@ -27,7 +24,6 @@ import java.util.Map;
  * @version 1.0
  */
 @Slf4j
-//@Setter
 @Component
 @RequiredArgsConstructor
 @EnableConfigurationProperties(NotificationKafkaProperties.class)
@@ -36,10 +32,6 @@ public class TaskManagerDeserializer extends ErrorHandlingDeserializer<Object> {
 	private final ObjectMapper objectMapper;
 	private final NotificationKafkaProperties properties;
 	private Map<String, Class<?>> notificationTypeMapping = new HashMap<>();
-	
-	public void init() {
-		notificationTypeMapping = new HashMap<>();
-	}
 	
 	/**
 	 * Конфигурирует десериализатор при инициализации.
@@ -81,86 +73,20 @@ public class TaskManagerDeserializer extends ErrorHandlingDeserializer<Object> {
 		if (data == null) {
 			return null;
 		}
-		
+		String messageType = extractMessageType(headers);
 		try {
-			// 1. Парсим JSON
-			JsonNode root = objectMapper.readTree(data);
-			
-			// 2. Извлекаем тип из поля "type" в JSON (если есть)
-			String messageType = root.has("type")
-					? root.get("type").asText()
-					: null;
-			
-			// 3. Если тип не найден в JSON, пробуем из заголовков
-			if (messageType == null) {
-				messageType = extractMessageType(headers);
-			}
-			
-			// 4. Находим соответствующий класс
 			Class<?> targetClass = notificationTypeMapping.get(messageType);
 			if (targetClass == null) {
-				log.error("Unknown message type: {}", messageType);
+				log.error("Unknown message type: " + messageType);
 				throw new KafkaDeserializationException("Unknown message type: " + messageType);
 			}
-			
-			// 5. Десериализуем (игнорируя неизвестные поля)
-			return objectMapper.readerFor(targetClass)
-					.without(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-					.readValue(data);
+			return objectMapper.treeToValue(objectMapper.readTree(data), targetClass);
 		}
 		catch (Exception ex) {
-			log.error("Failed to deserialize message", ex);
+			log.error("Failed to deserialize message: " + messageType, ex);
 			throw new KafkaDeserializationException("Failed to deserialize message", ex);
 		}
 	}
-//	@Override
-//	public Object deserialize(String topic, Headers headers, byte[] data) {
-//		if (data == null) {
-//			return null;
-//		}
-//
-//		try {
-//			// Пробуем десериализовать без проверки типа из заголовка
-//			JsonNode root = objectMapper.readTree(data);
-//
-//			// Определяем тип из поля "type" в JSON
-//			String messageType = root.has("type")
-//					? root.get("type").asText()
-//					: null;
-//
-//			Class<?> targetClass = notificationTypeMapping.get(messageType);
-//			if (targetClass == null) {
-//				log.error("Unknown message type: {}", messageType);
-//				throw new KafkaDeserializationException("Unknown message type: " + messageType);
-//			}
-//
-//			return objectMapper.treeToValue(root, targetClass);
-//		}
-//		catch (Exception ex) {
-//			log.error("Failed to deserialize message", ex);
-//			throw new KafkaDeserializationException("Failed to deserialize message", ex);
-//		}
-//	}
-
-//	@Override
-//	public Object deserialize(String topic, Headers headers, byte[] data) {
-//		if (data == null) {
-//			return null;
-//		}
-//		String messageType = extractMessageType(headers);
-//		try {
-//			Class<?> targetClass = notificationTypeMapping.get(messageType);
-//			if (targetClass == null) {
-//				log.error("Unknown message type: " + messageType);
-//				throw new KafkaDeserializationException("Unknown message type: " + messageType);
-//			}
-//			return objectMapper.treeToValue(objectMapper.readTree(data), targetClass);
-//		}
-//		catch (Exception ex) {
-//			log.error("Failed to deserialize message: " + messageType, ex);
-//			throw new KafkaDeserializationException("Failed to deserialize message", ex);
-//		}
-//	}
 	
 	private String extractMessageType(Headers headers) {
 		if (headers == null) return null;
