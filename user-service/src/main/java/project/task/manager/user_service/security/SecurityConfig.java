@@ -31,63 +31,63 @@ import project.task.manager.user_service.security.filter.LoginAuthenticationFilt
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-		private final SecurityExceptionHandler exceptionHandler;
-		private final UserDetailsService userDetailsService;
-		private final PasswordEncoder passwordEncoder;
-		private final JwtTokenProvider tokenProvider;
-		private final JwtProperties jwtProperties;
-		private final ObjectMapper objectMapper;
-		private final JwtFilter jwtFilter;
-
-		@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        return http
-								.cors(AbstractHttpConfigurer::disable)
-								.csrf(AbstractHttpConfigurer::disable)
-								.authenticationProvider(authenticationProvider())
-								.httpBasic(AbstractHttpConfigurer::disable)
-								.formLogin(AbstractHttpConfigurer::disable)
-								.sessionManagement(session ->
-												session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/v3/api-docs/**").permitAll()
-												.requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-												.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll()
-												.requestMatchers("/api/v1/admin/**")
-												.hasAuthority(Role.ADMIN.getAuthority())
-                                .anyRequest().authenticated())
-                .addFilterBefore(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-								.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-								.exceptionHandling(ex ->
-												ex.authenticationEntryPoint(exceptionHandler::unauthorizedHandler)
-																.accessDeniedHandler(exceptionHandler::accessDeniedHandler))
-								.build();
-    }
-
-		@Bean
-		public AuthenticationProvider authenticationProvider() {
-				DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
-				daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-				return daoAuthenticationProvider;
-		}
-
-		@Bean
-		public LoginAuthenticationFilter loginAuthenticationFilter() throws Exception {
-				LoginAuthenticationFilter filter = new LoginAuthenticationFilter(
-								tokenProvider, userDetailsService, passwordEncoder, jwtProperties, objectMapper
-				);
-				filter.setAuthenticationManager(authenticationManager(null));
-				filter.setFilterProcessesUrl("/api/v1/login");
-				return filter;
-		}
-
-		@Bean
-		public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-				return configuration.getAuthenticationManager();
-		}
+	
+	private final SecurityExceptionHandler exceptionHandler;
+	private final UserDetailsService userDetailsService;
+	private final PasswordEncoder passwordEncoder;
+	private final JwtTokenProvider tokenProvider;
+	private final JwtProperties jwtProperties;
+	private final ObjectMapper objectMapper;
+	private final JwtFilter jwtFilter;
+	
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		
+		return http
+				.cors(AbstractHttpConfigurer::disable)
+				.csrf(AbstractHttpConfigurer::disable)
+				.authenticationProvider(authenticationProvider())
+				.httpBasic(AbstractHttpConfigurer::disable)
+				.formLogin(AbstractHttpConfigurer::disable)
+				.sessionManagement(session ->
+						session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+						.requestMatchers(HttpMethod.GET,"/v3/api-docs/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/v1/users/short/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
+						.requestMatchers("/swagger-ui/**").permitAll()
+						.requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.getAuthority())
+						.anyRequest().authenticated())
+				.addFilterBefore(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling(ex ->
+						ex.authenticationEntryPoint(exceptionHandler::unauthorizedHandler)
+								.accessDeniedHandler(exceptionHandler::accessDeniedHandler))
+				.build();
+	}
+	
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
+		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+		return daoAuthenticationProvider;
+	}
+	
+	@Bean
+	public LoginAuthenticationFilter loginAuthenticationFilter() throws Exception {
+		LoginAuthenticationFilter filter = new LoginAuthenticationFilter(
+				tokenProvider, userDetailsService, passwordEncoder, jwtProperties, objectMapper
+		);
+		filter.setAuthenticationManager(authenticationManager(null));
+		filter.setFilterProcessesUrl("/api/v1/login");
+		return filter;
+	}
+	
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+		return configuration.getAuthenticationManager();
+	}
 }

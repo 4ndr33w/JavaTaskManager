@@ -10,6 +10,7 @@ import project.task.manager.user_service.controller.UserController;
 import project.task.manager.user_service.data.request.ChangePasswordRequestDto;
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
+import project.task.manager.user_service.data.response.ShortUserResponseDto;
 import project.task.manager.user_service.data.response.UserPageViewResponseDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
 import project.task.manager.user_service.service.UserService;
@@ -104,4 +105,9 @@ public class UserControllerImpl implements UserController {
 		public ResponseEntity<String> dropPassword() {
 				return ResponseEntity.status(HttpStatus.OK).body(userService.dropPassword());
 		}
+	
+	@Override
+	public ResponseEntity<ShortUserResponseDto> getShortUserInfo(UUID id) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getShortUserResponseDto(id));
+	}
 }

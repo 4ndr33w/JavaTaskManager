@@ -8,8 +8,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import project.task.manager.user_service.data.entity.User;
 import project.task.manager.user_service.data.mapper.decorator.UserMapperDecorator;
+import project.task.manager.user_service.data.projection.UserShortProjection;
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
+import project.task.manager.user_service.data.response.ShortUserResponseDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
 
 /**
@@ -75,4 +77,10 @@ public interface UserMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User mapUpdateToEntity(UserUpdateDto updateDto, @MappingTarget User user);
     
+    /**
+     * Преобразует проекцию данных пользователя в краткое представление DTO.
+     * @param projection
+     * @return
+     */
+    ShortUserResponseDto mapProjectionToDto(UserShortProjection projection);
 }
