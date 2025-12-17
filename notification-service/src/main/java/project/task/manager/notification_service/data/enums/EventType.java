@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EventType {
+	
 	USER_CREATED("user created"),
 	USER_DELETED("user deleted"),
 	USER_UPDATED("user updated");

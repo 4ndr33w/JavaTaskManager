@@ -18,11 +18,13 @@ import project.task.manager.user_service.data.entity.Outbox;
 import project.task.manager.user_service.data.entity.User;
 import project.task.manager.user_service.data.mapper.OutboxMapper;
 import project.task.manager.user_service.data.mapper.UserMapper;
+import project.task.manager.user_service.data.projection.UserShortProjection;
 import project.task.manager.user_service.data.repository.OutboxRepository;
 import project.task.manager.user_service.data.repository.UserRepository;
 import project.task.manager.user_service.data.request.ChangePasswordRequestDto;
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
+import project.task.manager.user_service.data.response.ShortUserResponseDto;
 import project.task.manager.user_service.data.response.UserPageViewResponseDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
 import project.task.manager.user_service.exception.PasswordDoesNotMatchException;
@@ -87,6 +89,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				() -> new UserNotFoundException("Не найден пользователь с id: %s".formatted(id.toString())));
 		
 		return userMapper.mapToDto(existingUser);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public ShortUserResponseDto getShortUserResponseDto(@NonNull UUID userId) {
+		UserShortProjection projection = userRepository.findShortUserByUserId(userId).orElseThrow(
+				() -> new UserNotFoundException("Не найден пользователь с id: %s".formatted(userId.toString()))
+		);
+		return userMapper.mapProjectionToDto(projection);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<ShortUserResponseDto> getListOfShortUserResponseDtos(@NonNull List<UUID> userIds) {
+		List<UserShortProjection> projections = userRepository.findAllShortUsersByUserIds(userIds);
+		return projections.stream().map(userMapper::mapProjectionToDto).toList();
 	}
 	
 	@Override

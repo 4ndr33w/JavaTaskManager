@@ -15,7 +15,7 @@
             <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
                 <destination>${LOGSTASH}</destination>
                 <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                    <customFields>{"app":"Task.Manager.notification-service"}</customFields>
+                    <customFields>{"app":"Task.Manager.NotificationService"}</customFields>
                 </encoder>
             </appender>
 

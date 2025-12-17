@@ -7,6 +7,7 @@ import project.task.manager.user_service.data.entity.User;
 import project.task.manager.user_service.data.request.ChangePasswordRequestDto;
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
+import project.task.manager.user_service.data.response.ShortUserResponseDto;
 import project.task.manager.user_service.data.response.UserPageViewResponseDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
 import project.task.manager.user_service.exception.UserNotFoundException;
@@ -134,6 +135,20 @@ public interface UserService {
 		boolean changeUsername(String newUsername);
 
 		String dropPassword();
+	
+	/**
+	 * Получить краткое представление пользователя по его ID.
+	 * @param userId
+	 * @return
+	 */
+	ShortUserResponseDto getShortUserResponseDto(UUID userId);
+	
+	/**
+	 * Получить краткое представление списка пользователей по их ID.
+	 * @param userId
+	 * @return
+	 */
+	List<ShortUserResponseDto> getListOfShortUserResponseDtos(List<UUID> userId);
 
 
 }

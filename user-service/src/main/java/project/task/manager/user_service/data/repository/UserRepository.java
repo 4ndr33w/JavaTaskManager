@@ -6,9 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import project.task.manager.user_service.data.entity.User;
+import project.task.manager.user_service.data.projection.UserShortProjection;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,5 +49,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 		@Modifying
 		@Query("UPDATE User u SET u.userName = :newUserName WHERE u.id = :userId")
 		int changeUsername(String newUserName, UUID userId);
-
+		
+		@Query("""
+SELECT u.id as id, u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id = :id
+""")
+		Optional<UserShortProjection> findShortUserByUserId(@Param("id") UUID id);
+		
+		@Query("""
+		SELECT u.id as id, u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id IN :ids
+		""")
+		List<UserShortProjection> findAllShortUsersByUserIds(@Param("ids") List<UUID> ids);
 }

@@ -25,6 +25,7 @@ import project.task.manager.user_service.configuration.openapi.constant.ApiRespo
 import project.task.manager.user_service.data.request.ChangePasswordRequestDto;
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
+import project.task.manager.user_service.data.response.ShortUserResponseDto;
 import project.task.manager.user_service.data.response.UserPageViewResponseDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
 import project.task.manager.user_service.exception.dto.ErrorResponseDto;
@@ -679,4 +680,59 @@ public interface UserController {
 		@Tag(name = "Операции менеджмента собственного профиля аутенфицированного пользователя")
 		@GetMapping("/drop")
 		ResponseEntity<String> dropPassword();
+	
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "Данные успешно получены",
+					content = @Content(
+							schema = @Schema(implementation = UserResponseDto.class),
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+			@ApiResponse(
+					responseCode = "400",
+					description = "Некорректный запрос",
+					content = @Content(
+							examples = {@ExampleObject(value = ApiResponseExample.BAD_REQUEST_EXAMPLE)},
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+			@ApiResponse(
+					responseCode = "404",
+					description = "Пользователь не найден",
+					content = @Content(
+							examples = {
+									@ExampleObject(value = ApiResponseExample.USER_NOT_FOUND_BY_ID_EXAMPLE)},
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+			@ApiResponse(
+					responseCode = "500",
+					description = "Внутренняя ошибка сервера",
+					content = @Content(
+							schema = @Schema(implementation = ErrorResponseDto.class),
+							mediaType = MediaType.APPLICATION_JSON_VALUE))})
+		@Operation(summary = "Получить краткую информацию о пользователе", description = "Возвращает краткую информацию о пользователе по его ID")
+		@Tag(name = "Операции менеджмента пользовательских профилей")
+		@GetMapping("/short/{id}")
+		ResponseEntity<ShortUserResponseDto> getShortUserInfo(@PathVariable UUID id);
+	
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "Данные успешно получены",
+					content = @Content(
+							schema = @Schema(implementation = UserResponseDto.class),
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+			@ApiResponse(
+					responseCode = "400",
+					description = "Некорректный запрос",
+					content = @Content(
+							examples = {@ExampleObject(value = ApiResponseExample.BAD_REQUEST_EXAMPLE)},
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+
+			@ApiResponse(
+					responseCode = "500",
+					description = "Внутренняя ошибка сервера",
+					content = @Content(
+							schema = @Schema(implementation = ErrorResponseDto.class),
+							mediaType = MediaType.APPLICATION_JSON_VALUE))})
+	@Tag(name = "Операции менеджмента пользовательских профилей")
+	@PostMapping("/short/list")
+	ResponseEntity<List<ShortUserResponseDto>> getShortUsersListInfo(@RequestBody List<UUID> userIds);
 }

@@ -4,12 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import project.task.manager.user_service.controller.UserController;
 import project.task.manager.user_service.data.request.ChangePasswordRequestDto;
 import project.task.manager.user_service.data.request.UserRequestDto;
 import project.task.manager.user_service.data.request.UserUpdateDto;
+import project.task.manager.user_service.data.response.ShortUserResponseDto;
 import project.task.manager.user_service.data.response.UserPageViewResponseDto;
 import project.task.manager.user_service.data.response.UserResponseDto;
 import project.task.manager.user_service.service.UserService;
@@ -104,4 +106,14 @@ public class UserControllerImpl implements UserController {
 		public ResponseEntity<String> dropPassword() {
 				return ResponseEntity.status(HttpStatus.OK).body(userService.dropPassword());
 		}
+	
+	@Override
+	public ResponseEntity<ShortUserResponseDto> getShortUserInfo(UUID id) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getShortUserResponseDto(id));
+	}
+	
+	@Override
+	public ResponseEntity<List<ShortUserResponseDto>> getShortUsersListInfo(List<UUID> userIds) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getListOfShortUserResponseDtos(userIds));
+	}
 }

@@ -198,6 +198,78 @@ services:
       - "env=dev"        # Лейблы для контейнера
       - "name={{.Name}}"
 
+  notification-service:
+    build: notification-service
+    image: notification-service:latest
+    container_name: notification-service
+    ports:
+      - "904:904"
+    depends_on:
+      notifications-db:
+        condition: service_healthy
+    networks:
+      - task-manager-net
+      - notification-service-net
+    environment:
+      - POSTGRES_DB=notifications_db
+      - POSTGRES_HOST=notifications-db:5432
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=postgres
+
+      - DISCOVERY_SERVER_HOST=discovery-server
+      - DISCOVERY_SERVER_PORT=900
+      - LIQUIBASE_ENABLE=true
+      - LOGSTASH=logstash:50000
+
+      - KAFKA_USER_CREATED_TOPIC=user-service.user-created-notification
+      - KAFKA_USER_UPDATED_TOPIC=user-service.user-updated-notification
+      - KAFKA_USER_DELETED_TOPIC=user-service.user-deleted-notification
+
+      - KAFKA_USER_CREATED_GROUP_ID=notification-service.user-created-group
+      - KAFKA_USER_UPDATED_GROUP_ID=notification-service.user-updated-group
+      - KAFKA_USER_DELETED_GROUP_ID=notification-service.user-deleted-group
+
+      - KAFKA_BOOTSTRAP_SERVER_1=kafka1:9092
+      - KAFKA_BOOTSTRAP_SERVER_2=kafka2:9092
+      - KAFKA_BOOTSTRAP_SERVER_3=kafka3:9092
+
+      - SMTP_HOST=mailhog
+      - SMTP_PORT=1025
+      - SMTP_USER=
+      - SMTP_PASSWORD=
+      - EMAIL_SENDER=4ndr33w@example.com
+
+      - USER_SERVICE_HOST=user-service:902
+      - USER_SERVICE_NAME=user-service
+
+  notifications-db:
+    image: postgres:18-alpine
+    container_name: notifications-db
+    ports:
+      - "5446:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: notifications_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - notifications_data:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - notification-service-net
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name=database"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+    labels:
+      - "env=dev"        # Лейблы для контейнера
+      - "name={{.Name}}"
+
   discovery-server:
     build: discovery-server
     image: discovery-server:latest
@@ -227,6 +299,7 @@ services:
 volumes:
   postgres_data:
   projects_data:
+  notifications_data:
   mongo-users-storage: {}
 
 networks:
@@ -239,4 +312,6 @@ networks:
   user-service-net:
     driver: bridge
   project-service-net:
+    driver: bridge
+  notification-service-net:
     driver: bridge
