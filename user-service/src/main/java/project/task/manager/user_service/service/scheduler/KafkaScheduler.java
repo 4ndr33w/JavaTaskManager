@@ -26,11 +26,11 @@ public class KafkaScheduler {
 	private final EventService eventService;
 	
 	@Async("asyncExecutor")
-	@Scheduled(fixedRateString = "${outbox.sender.fixed-rate-ms:10000}")
+	@Scheduled(fixedRateString = "${outbox.sender.fixed-rate-ms}")
 	@SchedulerLock(
 			name = "KafkaScheduler.publishKafkaMessage",
-			lockAtMostFor = "${outbox.sender.lock-at-most-for:9s}",
-			lockAtLeastFor = "${outbox.sender.lock-at-least-for:1s}"
+			lockAtMostFor = "${outbox.sender.lock-at-most-for}",
+			lockAtLeastFor = "${outbox.sender.lock-at-least-for}"
 	)
 	public void publishKafkaMessage() {
 		log.info("KafkaScheduler: publishKafkaMessage");

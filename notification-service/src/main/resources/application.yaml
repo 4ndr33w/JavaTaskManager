@@ -108,3 +108,9 @@ users.client:
 scheduler:
   inbox:
     cron: "0/10 * * * * *"
+
+inbox:
+  processor:
+    fixed-rate-ms: 10000
+    lock-at-most-for: 9s
+    lock-at-least-for: 1s

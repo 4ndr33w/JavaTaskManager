@@ -1,4 +1,4 @@
-package project.task.manager.user_service.configuration;
+package project.task.manager.notification_service.config;
 
 import net.javacrumbs.shedlock.core.LockProvider;
 import net.javacrumbs.shedlock.provider.jdbctemplate.JdbcTemplateLockProvider;

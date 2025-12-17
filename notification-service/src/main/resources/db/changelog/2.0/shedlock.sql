@@ -1,6 +1,6 @@
 --liquibase formatted sql
 --changeset Andr33w:TaskManager-001
---logicalFilePath:4.0/shedlock.sql
+--logicalFilePath:2.0/shedlock.sql
 
 CREATE TABLE IF NOT EXISTS shedlock (
     name        TEXT        NOT NULL,

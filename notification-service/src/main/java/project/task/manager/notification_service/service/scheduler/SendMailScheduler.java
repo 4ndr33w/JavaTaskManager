@@ -2,6 +2,7 @@ package project.task.manager.notification_service.service.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,10 +35,16 @@ public class SendMailScheduler {
 	private final SendService sendService;
 	
 	@Async("asyncExecutor")
-	@Scheduled(cron = "${scheduler.inbox.cron}")
+	@Scheduled(fixedRateString = "${inbox.processor.fixed-rate-ms:10000}")
+	@SchedulerLock(
+			name = "SendMailScheduler.sendMail",
+			lockAtMostFor = "${inbox.processor.lock-at-most-for:9s}",
+			lockAtLeastFor = "${inbox.processor.lock-at-least-for:1s}"
+	)
 	public void sendMail() {
+		log.info("SendMailScheduler started");
 		List<Inbox> events= inboxRepository.findAllByStatus(EventStatus.RECEIVED);
-		
+
 		List<UUID> ids = events.stream()
 				.map(utils::getEventPayload)
 				.map(Event::getUserId)

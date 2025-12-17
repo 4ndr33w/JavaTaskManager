@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: shedlock.sql
+      relativeToChangelogFile: true
