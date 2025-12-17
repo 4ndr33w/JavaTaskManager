@@ -62,8 +62,6 @@ eureka:
       defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
   instance:
     prefer-ip-address: false
-    hostname: ${spring.application.name}
-    instance-id: ${HOST_NAME}:${APP_NAME}:${server.port}
 
 properties:
   kafka:

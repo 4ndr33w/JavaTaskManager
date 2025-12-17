@@ -8,10 +8,6 @@ spring:
     name: project-service
   config:
     import: optional:file:.env[.properties]
-  cloud:
-    config:
-      uri: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}
-      fail-fast: true
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}
@@ -48,8 +44,6 @@ eureka:
       defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
   instance:
     prefer-ip-address: false
-    hostname: ${spring.application.name}
-    instance-id: ${HOST_NAME:project-service}:${APP_NAME:project-service}:${server.port}
 
 management:
   endpoints:
