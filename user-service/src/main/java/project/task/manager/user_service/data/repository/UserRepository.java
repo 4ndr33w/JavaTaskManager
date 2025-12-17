@@ -51,12 +51,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 		int changeUsername(String newUserName, UUID userId);
 		
 		@Query("""
-SELECT u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id = :id
+SELECT u.id as id, u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id = :id
 """)
 		Optional<UserShortProjection> findShortUserByUserId(@Param("id") UUID id);
 		
 		@Query("""
-		SELECT u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id IN :ids
+		SELECT u.id as id, u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id IN :ids
 		""")
 		List<UserShortProjection> findAllShortUsersByUserIds(@Param("ids") List<UUID> ids);
 }

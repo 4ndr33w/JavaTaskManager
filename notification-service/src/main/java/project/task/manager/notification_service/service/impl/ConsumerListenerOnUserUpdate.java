@@ -11,6 +11,8 @@ import project.task.manager.notification_service.data.mapper.InboxMapper;
 import project.task.manager.notification_service.data.repository.InboxRepository;
 import project.task.manager.notification_service.service.ConsumerListener;
 
+import java.util.Optional;
+
 /**
  * @author 4ndr33w
  * @version 1.0
@@ -19,8 +21,7 @@ import project.task.manager.notification_service.service.ConsumerListener;
 @Service
 @RequiredArgsConstructor
 public class ConsumerListenerOnUserUpdate implements ConsumerListener<UserUpdatedEvent> {
-	
-	private final SendMailService sendMailService;
+
 	private final InboxRepository inboxRepository;
 	private final InboxMapper inboxMapper;
 	
@@ -30,13 +31,13 @@ public class ConsumerListenerOnUserUpdate implements ConsumerListener<UserUpdate
 			topics = "${properties.kafka.userUpdated.topic}",
 			groupId = "${properties.kafka.userUpdated.group}")
 	public void consume(UserUpdatedEvent event) {
-		Inbox result = inboxRepository.save(inboxMapper.mapUpdateEventToInbox(event));
-		
-		log.debug("Saved inbox: {}", result.getId() + "");
-	}
-	
-	@Override
-	public void publish(UserUpdatedEvent event) {
-		sendMailService.send(event);
+		Optional<Inbox> processedEvent = inboxRepository.findByEventId(event.getMessageId());
+		if(processedEvent.isEmpty()) {
+			Inbox result = inboxRepository.save(inboxMapper.mapUpdateEventToInbox(event));
+			log.debug("Saved inbox: {}", result.getId() + "");
+		}
+		else {
+			log.debug("Event already processed: {}", event.getMessageId());
+		}
 	}
 }

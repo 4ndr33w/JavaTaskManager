@@ -3,6 +3,8 @@
 .gradle
 .gitattributes
 Dockerfile
+settings.gradle
+build.gradle
 
 DockerConfig/elk/elasticsearch/.dockerignore
 DockerConfig/elk/extensions/

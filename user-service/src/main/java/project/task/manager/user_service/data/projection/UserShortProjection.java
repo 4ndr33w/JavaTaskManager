@@ -1,5 +1,7 @@
 package project.task.manager.user_service.data.projection;
 
+import java.util.UUID;
+
 /**
  * Проекция для краткого представления пользователя
  *
@@ -8,6 +10,7 @@ package project.task.manager.user_service.data.projection;
  */
 public interface UserShortProjection {
 	
+	UUID getId();
 	String getName();
 	String getLastName();
 	String getUserName();

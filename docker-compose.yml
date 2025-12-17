@@ -198,7 +198,6 @@ services:
       - "env=dev"        # Лейблы для контейнера
       - "name={{.Name}}"
 
-
   notification-service:
     build: notification-service
     image: notification-service:latest
@@ -212,8 +211,8 @@ services:
       - task-manager-net
       - notification-service-net
     environment:
-      - POSTGRES_DB=users_db
-      - POSTGRES_HOST=users-db:5432
+      - POSTGRES_DB=notifications_db
+      - POSTGRES_HOST=notifications-db:5432
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=postgres
 

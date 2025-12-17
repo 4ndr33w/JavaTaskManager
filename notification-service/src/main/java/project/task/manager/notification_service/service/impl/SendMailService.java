@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import project.task.manager.notification_service.client.UserServiceClient;
-import project.task.manager.notification_service.data.event.abstraction.Event;
-import project.task.manager.notification_service.data.event.request.UserDto;
+import org.springframework.transaction.annotation.Transactional;
+import project.task.manager.notification_service.data.entity.Inbox;
+import project.task.manager.notification_service.data.enums.EventStatus;
+import project.task.manager.notification_service.data.repository.InboxRepository;
 import project.task.manager.notification_service.data.response.ShortUserResponseDto;
-import project.task.manager.notification_service.properties.NotificationSenderProperties;
 import project.task.manager.notification_service.service.SendService;
+import project.task.manager.notification_service.util.Utils;
+
+import java.time.ZonedDateTime;
 
 /**
  * @author 4ndr33w
@@ -17,28 +20,24 @@ import project.task.manager.notification_service.service.SendService;
  */
 @Service
 @RequiredArgsConstructor
-public class SendMailService implements SendService<Event> {
+public class SendMailService implements SendService {
 	
 	private final JavaMailSender javaMailSender;
-	private final NotificationSenderProperties senderProperties;
-	private final UserServiceClient userServiceClient;
+	private final InboxRepository inboxRepository;
+	private final Utils utils;
 	
 	@Override
-	public void send(Event event) {
-		
-		ShortUserResponseDto user = userServiceClient.getUserById(event.getUserId()).getBody();
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(senderProperties.getEmailSender());
-		message.setTo(user.email());
-		message.setSubject("Task manager notification");
-		message.setText(event.toString());
-		
+	@Transactional
+	public void send(Inbox event, ShortUserResponseDto user) {
+		SimpleMailMessage message = utils.buildMessage(event, user);
 		try {
 			javaMailSender.send(message);
+			event.setStatus(EventStatus.SENT);
+			event.setProcessedAt(ZonedDateTime.now());
+			inboxRepository.save(event);
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	
 	}
 }

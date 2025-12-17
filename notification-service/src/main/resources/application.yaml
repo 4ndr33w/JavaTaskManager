@@ -104,3 +104,7 @@ notification:
 users.client:
   host: ${USER_SERVICE_HOST}
   name: ${USER_SERVICE_NAME}
+
+scheduler:
+  inbox:
+    cron: "0/10 * * * * *"
