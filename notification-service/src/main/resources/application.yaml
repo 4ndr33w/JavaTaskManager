@@ -7,6 +7,29 @@ spring:
   config:
     import: optional:file:.env[.properties]
 
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${POSTGRES_HOST}/${POSTGRES_DB}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD}
+
+  liquibase:
+    change-log: "classpath:db/changelog/db.changelog-master.yml"
+    enabled: ${LIQUIBASE_ENABLE:true}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO:none}
+    properties:
+      hibernate:
+        show_sql: ${SHOW_SQL:true}
+        format_sql: ${SHOW_SQL:true}
+        use_sql_comments: true
+        jdbc:
+          time_zone: UTC
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
   mail:
     host: ${SMTP_HOST}
     port: ${SMTP_PORT}

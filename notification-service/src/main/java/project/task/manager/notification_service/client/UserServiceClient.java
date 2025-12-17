@@ -4,13 +4,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import project.task.manager.notification_service.data.event.request.UserDto;
+import project.task.manager.notification_service.data.response.ShortUserResponseDto;
 
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -20,9 +15,6 @@ import java.util.UUID;
 @FeignClient(name = "${users.client.name}", url = "${users.client.host}")
 public interface UserServiceClient {
 	
-	@GetMapping("/user-service/api/v1/admin/{userId}")
-	ResponseEntity<UserDto> getUserById(@PathVariable UUID userId, @RequestHeader("Authorization") String authHeader);
-	
-	@PostMapping("/user-service/api/v1/users/ids")
-	ResponseEntity<List<UserDto>> getUsersByIds(@RequestBody Set<UUID> userIds, @RequestHeader("Authorization") String authHeader);
+	@GetMapping("/user-service/api/v1/users/short/{userId}")
+	ResponseEntity<ShortUserResponseDto> getUserById(@PathVariable UUID userId);
 }

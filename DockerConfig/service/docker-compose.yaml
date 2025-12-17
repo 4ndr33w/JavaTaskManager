@@ -137,3 +137,5 @@ networks:
     driver: bridge
   camunda-net:
     driver: bridge
+  task-manager-net:
+    external: true

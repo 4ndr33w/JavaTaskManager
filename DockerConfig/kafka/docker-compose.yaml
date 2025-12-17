@@ -60,7 +60,6 @@ services:
       - "./kafka-2-0-0.yml:/etc/prometheus/kafka-2-0-0.yml"
     networks:
       - kafka-net
-      - task-manager-net
 
   kafka2:
     image: confluentinc/cp-kafka:7.4.0
