@@ -1,6 +1,6 @@
 version: '3.8'
 
-# перед запуском нужно вручную создать external network: 'monitoring-net'
+# перед запуском нужно вручную создать external network: 'task-manager-net'
 networks:
   task-manager-net:
     external: true

@@ -28,6 +28,7 @@ ext {
 	set('openapiStarterVersion', '2.8.14')
 	set('liquibaseVersion', '5.0.0')
 	set('micrometerVersion', '1.16.0')
+	set('resilience4jVersion', '2.3.0')
 }
 
 dependencies {
@@ -79,6 +80,11 @@ dependencies {
 	// ------------------------------------------------------------
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+	// ------------------------------------------------------------
+
+	// resilience-4j
+	// ------------------------------------------------------------
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 	// ------------------------------------------------------------
 
 	// Tests
