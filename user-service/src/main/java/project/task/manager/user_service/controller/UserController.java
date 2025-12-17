@@ -711,4 +711,28 @@ public interface UserController {
 		@Tag(name = "Операции менеджмента пользовательских профилей")
 		@GetMapping("/short/{id}")
 		ResponseEntity<ShortUserResponseDto> getShortUserInfo(@PathVariable UUID id);
+	
+	@ApiResponses({
+			@ApiResponse(
+					responseCode = "200",
+					description = "Данные успешно получены",
+					content = @Content(
+							schema = @Schema(implementation = UserResponseDto.class),
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+			@ApiResponse(
+					responseCode = "400",
+					description = "Некорректный запрос",
+					content = @Content(
+							examples = {@ExampleObject(value = ApiResponseExample.BAD_REQUEST_EXAMPLE)},
+							mediaType = MediaType.APPLICATION_JSON_VALUE)),
+
+			@ApiResponse(
+					responseCode = "500",
+					description = "Внутренняя ошибка сервера",
+					content = @Content(
+							schema = @Schema(implementation = ErrorResponseDto.class),
+							mediaType = MediaType.APPLICATION_JSON_VALUE))})
+	@Tag(name = "Операции менеджмента пользовательских профилей")
+	@PostMapping("/short/list")
+	ResponseEntity<List<ShortUserResponseDto>> getShortUsersListInfo(@RequestBody List<UUID> userIds);
 }

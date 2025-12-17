@@ -101,6 +101,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
+	public List<ShortUserResponseDto> getListOfShortUserResponseDtos(@NonNull List<UUID> userIds) {
+		List<UserShortProjection> projections = userRepository.findAllShortUsersByUserIds(userIds);
+		return projections.stream().map(userMapper::mapProjectionToDto).toList();
+	}
+	
+	@Override
 	@Transactional
 	public UserResponseDto create(@NonNull UserRequestDto request, MultipartFile image) {
 		try {

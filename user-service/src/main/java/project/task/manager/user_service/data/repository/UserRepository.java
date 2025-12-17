@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import project.task.manager.user_service.data.entity.User;
 import project.task.manager.user_service.data.projection.UserShortProjection;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,4 +54,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 SELECT u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id = :id
 """)
 		Optional<UserShortProjection> findShortUserByUserId(@Param("id") UUID id);
+		
+		@Query("""
+		SELECT u.userName as userName, u.email as email, u.name as name, u.lastName as lastName FROM User u WHERE u.id IN :ids
+		""")
+		List<UserShortProjection> findAllShortUsersByUserIds(@Param("ids") List<UUID> ids);
 }

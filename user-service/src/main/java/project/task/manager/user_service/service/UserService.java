@@ -142,6 +142,13 @@ public interface UserService {
 	 * @return
 	 */
 	ShortUserResponseDto getShortUserResponseDto(UUID userId);
+	
+	/**
+	 * Получить краткое представление списка пользователей по их ID.
+	 * @param userId
+	 * @return
+	 */
+	List<ShortUserResponseDto> getListOfShortUserResponseDtos(List<UUID> userId);
 
 
 }

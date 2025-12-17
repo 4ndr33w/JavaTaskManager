@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import project.task.manager.user_service.controller.UserController;
@@ -109,5 +110,10 @@ public class UserControllerImpl implements UserController {
 	@Override
 	public ResponseEntity<ShortUserResponseDto> getShortUserInfo(UUID id) {
 		return ResponseEntity.status(HttpStatus.OK).body(userService.getShortUserResponseDto(id));
+	}
+	
+	@Override
+	public ResponseEntity<List<ShortUserResponseDto>> getShortUsersListInfo(List<UUID> userIds) {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getListOfShortUserResponseDtos(userIds));
 	}
 }

@@ -57,6 +57,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/v1/auth/refresh").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/v1/users/short/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/v1/users/short/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/v1/login").permitAll()
 						.requestMatchers("/swagger-ui/**").permitAll()
 						.requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.getAuthority())
