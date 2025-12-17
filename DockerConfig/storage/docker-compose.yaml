@@ -88,11 +88,40 @@ services:
     networks:
       - redis-net
 
+  postgres-db:
+    image: postgres:18-alpine
+    container_name: postgres-db
+    ports:
+      - "5434:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_db_data:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - task-manager-net
+    logging:
+      driver: json-file  # Логи в JSON-формате
+      options:
+        labels: "env=dev,name=database"  # Лейблы
+        tag: "{{.Name}}"  # Доп. теги для логов
+    labels:
+      - "env=dev"        # Лейблы для контейнера
+      - "name={{.Name}}"
+
 
 volumes:
   mongo-storage-data: {}
   redis_data: {}
   minio_data: {}
+  postgres_db_data:
 
 networks:
   task-manager-net:
