@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import project.task.manager.notification_service.data.entity.Inbox;
 import project.task.manager.notification_service.data.event.UserUpdatedEvent;
+import project.task.manager.notification_service.data.mapper.InboxMapper;
+import project.task.manager.notification_service.data.repository.InboxRepository;
 import project.task.manager.notification_service.service.ConsumerListener;
 
 /**
@@ -18,6 +21,8 @@ import project.task.manager.notification_service.service.ConsumerListener;
 public class ConsumerListenerOnUserUpdate implements ConsumerListener<UserUpdatedEvent> {
 	
 	private final SendMailService sendMailService;
+	private final InboxRepository inboxRepository;
+	private final InboxMapper inboxMapper;
 	
 	@Override
 	@KafkaHandler
@@ -25,7 +30,9 @@ public class ConsumerListenerOnUserUpdate implements ConsumerListener<UserUpdate
 			topics = "${properties.kafka.userUpdated.topic}",
 			groupId = "${properties.kafka.userUpdated.group}")
 	public void consume(UserUpdatedEvent event) {
-		publish(event);
+		Inbox result = inboxRepository.save(inboxMapper.mapUpdateEventToInbox(event));
+		
+		log.debug("Saved inbox: {}", result.getId() + "");
 	}
 	
 	@Override

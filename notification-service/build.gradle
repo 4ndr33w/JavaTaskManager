@@ -24,7 +24,6 @@ ext {
 	set('logbackEncoderVersion', '9.0')
 	set('mapstructVersion', '1.6.3')
 	set('lombokVersion', '1.18.38')
-	set('javaJwtVersion', '4.5.0')
 	set('janinoVersion', '3.1.12')
 	set('openapiStarterVersion', '2.8.14')
 	set('liquibaseVersion', '5.0.0')
@@ -76,7 +75,11 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:${lombokVersion}"
 	// ------------------------------------------------------------
 
+	// Datasource
+	// ------------------------------------------------------------
 	runtimeOnly 'org.postgresql:postgresql'
+	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+	// ------------------------------------------------------------
 
 	// Tests
 	// ------------------------------------------------------------

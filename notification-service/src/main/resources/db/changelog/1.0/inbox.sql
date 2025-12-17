@@ -5,7 +5,6 @@
 CREATE TABLE IF NOT EXISTS inbox (
     id              UUID                        PRIMARY KEY DEFAULT uuidv7(),
     event_id        UUID                        NOT NULL,
-    event_type      TEXT                        NOT NULL,
     status          TEXT                        NOT NULL,
     payload         JSONB,
     received_at     TIMESTAMP WITH TIME ZONE    DEFAULT CURRENT_TIMESTAMP,
