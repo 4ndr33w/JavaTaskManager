@@ -30,6 +30,7 @@ ext {
 	set('openapiStarterVersion', '2.8.14')
 	set('liquibaseVersion', '5.0.0')
 	set('micrometerVersion', '1.16.0')
+	set('shedlockVersion', '7.2.0')
 }
 
 dependencies {
@@ -62,6 +63,9 @@ dependencies {
 	implementation 'org.projectlombok:lombok:1.18.38'
 	annotationProcessor 'org.projectlombok:lombok:1.18.38'
 	compileOnly 'org.projectlombok:lombok:1.18.38'
+
+	implementation "net.javacrumbs.shedlock:shedlock-spring:${shedlockVersion}"
+	implementation "net.javacrumbs.shedlock:shedlock-provider-jdbc-template:${shedlockVersion}"
 
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

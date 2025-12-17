@@ -2,6 +2,7 @@ package project.task.manager.user_service.service.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,12 @@ public class KafkaScheduler {
 	private final EventService eventService;
 	
 	@Async("asyncExecutor")
-	@Scheduled(cron = "${scheduler.kafka.cron}")
+	@Scheduled(fixedRateString = "${outbox.sender.fixed-rate-ms:10000}")
+	@SchedulerLock(
+			name = "KafkaScheduler.publishKafkaMessage",
+			lockAtMostFor = "${outbox.sender.lock-at-most-for:9s}",
+			lockAtLeastFor = "${outbox.sender.lock-at-least-for:1s}"
+	)
 	public void publishKafkaMessage() {
 		log.info("KafkaScheduler: publishKafkaMessage");
 		

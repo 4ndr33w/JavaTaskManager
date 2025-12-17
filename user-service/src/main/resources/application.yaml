@@ -108,3 +108,9 @@ management:
 scheduler:
   kafka:
     cron: "0/10 * * * * *"
+
+outbox:
+  sender:
+    fixed-rate-ms: 10000
+    lock-at-most-for: 9s
+    lock-at-least-for: 1s
