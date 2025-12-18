@@ -19,17 +19,20 @@
 <hr/>
 
 ### API-Gateway
-Шлюз приложения. Работает по адресу http://localhost:901<br>
-Доступен `Swagger`: http://localhost:901/swagger-ui/index.html
+Шлюз приложения. <br> 
+`url`: http://localhost:901 <br>
+`Swagger`: http://localhost:901/swagger-ui/index.html
 <hr/>
 
 ### Discovery-Server
-Регистрирует сервисы, предоставляет доступ по именам.
-Работает по адресу http://localhost:900
+Регистрирует сервисы, предоставляет доступ по именам. <br>
+`url`: http://localhost:900
 <hr/>
 
 ### User-Service
 Сервис администрирования пользователей, так же осуществляет авторизацию и аутентификацию.<br>
+`url`: http://localhost:902/user-service <br>
+`Swagger`: http://localhost:901/user-service/swagger-ui/index.html<br>
 
 Контроллер пользователей:<br>
 http://localhost:902/user-service/api/v1/users<br>
@@ -57,8 +60,12 @@ http://localhost:902/user-service/api/v1/login<br>
 
 ### Product-Service
 Сервис управления проектами.<br>
-Работает по адресу http://localhost:903/project-service<br>
-(Контроллер менеджмента проектов http://localhost:901/project-service/api/v1/projects через `API-Gateway`)
+`url`: http://localhost:903/project-service <br>
+`Swagger`: http://localhost:903/project-service/swagger-ui/index.html<br>
+
+Контроллер менеджмента проектов:<br> 
+http://localhost:903/project-service/api/v1/projects <br>
+(http://localhost:901/project-service/api/v1/projects через `API-Gateway`)
 
 Сервис отвечает за:
 * создание проекта,
@@ -69,6 +76,9 @@ http://localhost:902/user-service/api/v1/login<br>
 
 ### Notification-Service
 Сервис уведомлений.<br>
-Работает по адресу http://localhost:904
+`url`: http://localhost:904 <br>
 
 Сервис отвечает за отправку уведомлений.<hr/>
+
+### Desktop-Client
+Сервис предоставляет GUI-интерфейс для работы с проектом <hr/>
