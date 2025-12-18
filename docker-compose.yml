@@ -49,10 +49,10 @@ services:
       - KAFKA_BOOTSTRAP_SERVER_3=kafka3:9092
 
       - LOCAL_URL=host.docker.internal
-      - API_GATEWAY_HOST=api-gateway
-      - PROJECT_SERVICE_HOST=project-service
-      - NOTIFICATION_SERVICE_HOST=notification-service
-      - USER_SERVICE_HOST=user-service
+      - API_GATEWAY_HOST=api-gateway:901
+      - PROJECT_SERVICE_HOST=project-service:903
+      - NOTIFICATION_SERVICE_HOST=notification-service:904
+      - USER_SERVICE_HOST=user-service:902
 
   users-db:
     image: postgres:18-alpine

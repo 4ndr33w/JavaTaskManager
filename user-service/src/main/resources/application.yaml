@@ -58,7 +58,15 @@ spring:
       resolve-lazily: false
 
 cors:
-  allowed-origin-patterns: http://${LOCAL_URL}:*, http://localhost:*, http://${API_GATEWAY_HOST}:*, http://${NOTIFICATION_SERVICE_HOST}:*, HTTP://${PROJECT_SERVICE_HOST}:*, http://${DISCOVERY_SERVER_HOST}:*, http://${USER_SERVICE_HOST}:*
+  allowed-origin-patterns:
+    - "*"
+    - http://${LOCAL_URL}:*
+    - http://localhost:*
+    - http://${API_GATEWAY_HOST}
+    - http://${NOTIFICATION_SERVICE_HOST}
+    - HTTP://${PROJECT_SERVICE_HOST}
+    - http://${DISCOVERY_SERVER_HOST}
+    - http://${USER_SERVICE_HOST}
   allowed-methods: "*"
   allowed-headers: "*"
   allow-credentials: true
@@ -105,6 +113,8 @@ eureka:
       defaultZone: http://${DISCOVERY_SERVER_HOST}:${DISCOVERY_SERVER_PORT}/eureka/
   instance:
     prefer-ip-address: false
+    #hostname: ${spring.application.name}
+    #instance-id: ${HOST_NAME:user-service}:${APP_NAME:user-service}:${server.port}
 
 management:
   endpoints:

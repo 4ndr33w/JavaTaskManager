@@ -159,8 +159,8 @@ public interface UserController {
 														schema = @Schema(implementation = ErrorResponseDto.class),
 														mediaType = MediaType.APPLICATION_JSON_VALUE))})
 		@Operation(
-						summary = "Получить данные собственного профиля пользователя",
-						description = "Возвращает данные аутенфицированного пользователя")
+						summary = "Получить данные профиля пользователя по указанному id",
+						description = "Возвращает данные пользователя по указанному id")
 		@Tag(name = "Операции менеджмента пользовательских профилей")
 		@GetMapping("/{id}")
 		ResponseEntity<UserResponseDto> getById(@PathVariable UUID id);
