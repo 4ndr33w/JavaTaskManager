@@ -57,6 +57,13 @@ spring:
       max-request-size: 2MB
       resolve-lazily: false
 
+cors:
+  allowed-origin-patterns: http://${LOCAL_URL}:*, http://localhost:*, http://${API_GATEWAY_HOST}:*, http://${NOTIFICATION_SERVICE_HOST}:*, HTTP://${PROJECT_SERVICE_HOST}:*, http://${DISCOVERY_SERVER_HOST}:*, http://${USER_SERVICE_HOST}:*
+  allowed-methods: "*"
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
 kafka:
   topics:
     userCreated:

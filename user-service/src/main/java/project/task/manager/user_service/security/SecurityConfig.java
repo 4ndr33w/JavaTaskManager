@@ -2,6 +2,7 @@ package project.task.manager.user_service.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import project.task.manager.user_service.data.enums.Role;
 import project.task.manager.user_service.exception.handler.SecurityExceptionHandler;
 import project.task.manager.user_service.properties.JwtProperties;
@@ -26,12 +28,14 @@ import project.task.manager.user_service.security.component.JwtTokenProvider;
 import project.task.manager.user_service.security.filter.JwtFilter;
 import project.task.manager.user_service.security.filter.LoginAuthenticationFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
 	
+	private final UrlBasedCorsConfigurationSource corsConfigurationSource;
 	private final SecurityExceptionHandler exceptionHandler;
 	private final UserDetailsService userDetailsService;
 	private final PasswordEncoder passwordEncoder;
@@ -42,9 +46,10 @@ public class SecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		log.info("Выполняется метод filterChain() в классе SecurityConfig");
 		
 		return http
-				.cors(AbstractHttpConfigurer::disable)
+				.cors(cors -> cors.configurationSource(corsConfigurationSource))
 				.csrf(AbstractHttpConfigurer::disable)
 				.authenticationProvider(authenticationProvider())
 				.httpBasic(AbstractHttpConfigurer::disable)

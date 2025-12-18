@@ -41,6 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
 						@NonNull HttpServletRequest request,
 						@NonNull HttpServletResponse response,
 						@NonNull FilterChain filterChain) throws ServletException, IOException {
+			log.info("Вызов JwtFilter.doFilterInternal с ресурса: {}", request.getRequestURL());
 				try {
 						String token = getTokenFromRequest(request);
 						if (token == null) {
