@@ -82,3 +82,23 @@ http://localhost:903/project-service/api/v1/projects <br>
 
 ### Desktop-Client
 Сервис предоставляет GUI-интерфейс для работы с проектом <hr/>
+
+Для запуска проекта:
+
+#### 1)
+`File` -> `Project Structure` -> `Libraries` -> `+` -> `Java` -> указываем путь к `\path\to\javafx-sdk\lib`
+
+#### 2)
+`File` -> `Settings` -> `Appearance & Behavior` -> `Path Variables` -> `+`<br>
+`Name`: `PATH_TO_FX`<br>
+`Value`: `\path\to\javafx-sdk\lib`<br>
+
+#### 3)
+`RUN -> Edit Configuration`: `--module-path ${PATH_TO_FX} --add-modules javafx.controls,javafx.fxml` <br>
+(`C:\Users\rx081\Downloads\openjfx-21.0.2_windows-x64_bin-sdk\javafx-sdk-21.0.2\lib`)
+
+### Нюансы запуска:
+!) При создании проекта через `GigaIDE` пришлось повозиться, чтобы запустить проект.<br>
+!) При создании проекта через `IntelliJ Idea` пришлось только добавить зависимость `org.jetbrains.kotlin:kotlin-stdlib`.<br>
+(В `module-info` так же пришлось добавить `requires kotlin.stdlib`)
+
