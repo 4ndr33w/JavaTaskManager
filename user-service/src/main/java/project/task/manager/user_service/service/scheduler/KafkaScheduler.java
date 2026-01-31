@@ -38,6 +38,7 @@ public class KafkaScheduler {
 		List<Outbox> events = outboxRepository.findAllByStatus(EventStatus.CREATED);
 		
 		if(!events.isEmpty()) {
+			log.debug("KafkaScheduler: publishKafkaMessage: events: {}", events);
 			events.forEach(eventService::sendEvent);
 		}
 	}

@@ -241,7 +241,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			byte[] userImage = imageService.getImageByUserId(existingUser.getId());
 			return userMapper.mapToDto(existingUser, userImage);
 		}
-		return userMapper.mapToDto(getUserFromSecurityContext());
+		return userMapper.mapToDto(existingUser);
 	}
 	
 	@Override

@@ -65,7 +65,7 @@ public class AdminServiceImpl implements AdminService {
 						byte[] image = imageService.getImageByUserId(id);
 						return userMapper.mapToDto(updatedUser, image);
 				}
-        return userMapper.mapToDto(existingUser);
+        return userMapper.mapToDto(updatedUser);
     }
 
     @Override

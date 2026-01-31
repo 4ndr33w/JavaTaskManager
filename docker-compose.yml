@@ -26,8 +26,8 @@ services:
       - MONGO_GRIDFS_BUCKET=users
 
       - JWT_ISSUER=user-service
-      - JWT_ACCESS_EXPIRATION_MS=900000
-      - JWT_REFRESH_EXPIRATION_MS=1800000
+      - JWT_ACCESS_EXPIRATION_MS=9000000
+      - JWT_REFRESH_EXPIRATION_MS=18000000
       - JWT_AUDIENCE=user-service-api
 
       - DISCOVERY_SERVER_HOST=discovery-server

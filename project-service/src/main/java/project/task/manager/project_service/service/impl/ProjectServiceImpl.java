@@ -42,7 +42,7 @@ public class ProjectServiceImpl implements ProjectService {
 			List<Project> projects = auxiliaryService.getProjectEntitiesByAdminId(adminId);
 			
 			// составляем список Id участников всех проектов чтобы одним запросом из REST-клиента получить всех юзеров
-			Set<UUID> participantIds = auxiliaryService.getProjectsUsers(projects);
+			Set<UUID> participantIds = auxiliaryService.getProjectsUsersIds(projects);
 			participantIds.add(adminId); // добавить админа к участникам
 			
 			ResponseEntity<List<UserDto>> participantsResponse = userClient.getUsersByIds(participantIds, authHeader);
@@ -69,7 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
 		if (projects.isEmpty()) {
 			return List.of();
 		}
-		Set<UUID> allUserIds = auxiliaryService.getProjectsUsers(projects);
+		Set<UUID> allUserIds = auxiliaryService.getProjectsUsersIds(projects);
 		
 		projects.stream()
 				.map(Project::getAdminId)
