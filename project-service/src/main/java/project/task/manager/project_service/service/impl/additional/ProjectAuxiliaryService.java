@@ -32,7 +32,7 @@ public class ProjectAuxiliaryService {
 		return projectRepository.findByAdminId(adminId);
 	}
 	
-	public Set<UUID> getProjectsUsers(List<Project> projects) {
+	public Set<UUID> getProjectsUsersIds(List<Project> projects) {
 		return projects.stream()
 				.map(Project::getUserIds)
 				.flatMap(Collection ::stream)
